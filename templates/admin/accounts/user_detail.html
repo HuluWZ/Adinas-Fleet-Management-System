@@ -1,0 +1,171 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+<style>
+  .errorlist{
+    color: red;
+  }
+  .image-link {
+    display: inline-block;
+}
+
+/* Style for circular or square shape */
+.rounded-image {
+    width: 100px; /* Adjust size as needed */
+    height: 100px; /* Adjust size as needed */
+    border-radius: 50%; /* For a circular shape; Use border-radius: 8px; for a square shape */
+    overflow: hidden;
+    border: 2px solid #ccc; /* Optional: Add border */
+}
+
+/* Style for the image */
+.rounded-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+/* Optional hover effect */
+.rounded-image:hover {
+    border-color: #000; /* Change border color on hover */
+}
+
+</style>
+{%endblock%}
+{%block users%}active{%endblock%}
+{%block users_submenu%}active{%endblock%}
+{%block page_title%}
+  <h3>{{subtitle}}</h3>
+  {%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:users_list'%}">Users List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:user_detail' pk=object.id%}">Users Detail</a></li>
+{%endblock%}
+
+{%block content%}
+        <div class="card">
+          <h4 class="card-header">{% translate 'User Information'%}</h4>
+            <div class="card-body">
+                
+                <form role="form" action="{%url 'admin:user_detail' pk=object.id%}" method="POST" enctype="multipart/form-data" class="form-horizontal  style-form">
+                  {%csrf_token%}
+                    <!-- {{form|crispy}} -->
+                    
+                    <div class="form-group row">
+                      <div class="col-md-4">
+                        <label>{{form.first_name.label}}</label>
+                        {{form.first_name}}
+                        <p class="alert-warning">{{form.first_name.errors}}</p>
+                      </div>
+                      <div class="col-md-4">
+                        <label >{{form.last_name.label}}</label>
+                        {{form.last_name}}
+                        <p class="alert-warning">{{form.last_name.errors}}</p>
+                      </div>
+                      <div class="col-md-4">
+                        <label >{{form.username.label}}</label>
+                        {{form.username}}
+                        <p class="alert-warning">{{form.username.errors}}</p>
+                      </div>
+                    </div>
+                    <!-- second row -->
+                    <div class="form-group row">
+                       
+                      <div class="col-md-4">
+                        <label >{{form.email.label}}</label>
+                        {{form.email}}
+                        <p class="alert-warning">{{form.email.errors}}</p>
+                      </div>
+                     
+                      
+                      <div class="col-md-4">
+                        <label >{{form.phone_number.label}}</label>
+                        {{form.phone_number}}
+                        <p class="alert-warning">{{form.phone_number.errors}}</p>
+                      </div>
+                      <div class="col-md-4">
+                        <label >{{form.gender.label}}</label>
+                        {{form.gender}}
+                        <p class="alert-warning">{{form.gender.errors}}</p>
+                      </div>
+                    </div>
+
+                    <!-- third row -->
+                    <div class="form-group row">
+                    <div class="col-md-4">
+                      <label>{{form.address.label}}</label>
+                      {{form.address}}
+                      <p class="alert-warning">{{form.address.errors}}</p>
+                    </div>
+                      <div class="col-md-6">
+                        <label >{{form.is_superuser.label}}</label>
+                        {{form.is_superuser}} &nbsp; &nbsp;{{form.is_superuser.help_text}}
+                        <p class="alert-warning">{{form.is_superuser.errors}}</p>
+                      </div>
+                      </div>
+                      <div class="form-group row">
+                     
+                      <div class="col-md-4">
+                        <label >{{form.groups.label}}</label>
+                        {{form.groups}}
+                        <p class="alert-warning">{{form.groups.errors}}</p>
+                      </div>
+                      {%if object.profile_image%}
+          <div class="col-md-4">
+            <a href="{{ object.profile_image.url }}" target="_blank" class="image-link">
+              <img src="{{ object.profile_image.url }}" alt="Profile Image" class="rounded-image">
+            </a>
+          </div>
+                      {%endif%}
+                      <div class="col-md-4">
+                        <label >{{form.profile_image.label}}</label>
+                        {{form.profile_image}} &nbsp; &nbsp;{{form.profile_image.help_text}}
+                        <p class="alert-warning">{{form.profile_image.errors}}</p>
+                      </div>
+                    </div>
+
+                    <p>Created Date: &nbsp; <i>{{object.created_date}}</i><span>|</span> 
+                      Created By: &nbsp;<i>{{object.created_by.username}}</i><span>|</span>
+                      Last Updated Date: &nbsp; <i>{{object.last_updated_date}}</i><span>|</span>
+                      Last Updated Date: &nbsp; <i>{{object.last_updated_by.username}}</i>
+                    </p>
+                    <hr>
+                  <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                      {%if perms.accounts.add_studentdocument and object.is_student%}
+                      <button type="button" data-bs-toggle="modal" data-bs-target="#documentModal" class="btn icon btn-success"> <i class="bi bi-upload"></i>&nbsp;&nbsp;Upload Document</button>
+                      {%endif%}
+                      <button type="submit" class="btn btn-primary" >{% translate 'Save Changes'%}</button>
+                      <a href="{%url 'admin:users_list' %}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+        </div>
+
+
+        <div class="modal modal-success fade text-left" id="documentModal" tabindex="-1" data-bs-backdrop="false"
+          role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+              role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="myModalLabel33">Please Upload Students Educational Document</h4>
+                      <button type="button" class="close" data-bs-dismiss="modal"
+                          aria-label="Close">
+                          <i data-feather="x"></i>
+                      </button>
+                  </div>
+                               </div>
+          </div>
+      </div>
+{%endblock%}
+
+{%block scripts %}
+    <script src="/static/vendors/choices.js/choices.min.js"></script>
+    <script src="/static/js/pages/form-element-select.js"></script>
+    
+{%endblock%}

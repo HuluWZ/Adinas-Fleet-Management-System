@@ -1,0 +1,85 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<style>
+  .content-panel {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 600px;
+  }
+</style>
+
+{%endblock%}
+{%block settings%}active{%endblock%}
+{%block settings_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:get_all_color'%}"> Vehicle Color List</a></li>
+{%endblock%}
+{%block content%}
+
+<div class="card">
+  <div class="card-header">
+        {% if perms.account.vehicle.add_vehiclecolor or user.is_superuser %}
+    <a type="button" href="{%url 'admin:create_color'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
+      {%translate 'Add Vehicle Color'%}</a>
+    {%endif%}
+  </div>
+  <hr>
+  <div class="card-body">
+    <table class="table table-striped" id="hidden-table-info">
+      <thead>
+        <tr>
+          <th>{%translate 'No'%}</th>
+          <th>{%translate 'Vehicle Color Name'%}</th>
+          <th>{%translate 'Created Date'%}</th>
+          <th>{%translate 'Action'%}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for object in vehicle_data%}
+        <tr class="gradeA">
+          <td>{{forloop.counter}}</td>
+          <td>{{object.name}}</td>
+          <td>{{object.created_at}}</td>
+
+          <td>
+        {% if perms.account.vehicle.change_vehiclecolor or user.is_superuser %}
+            {% if object.is_active %}
+             <a href="{%url 'admin:activate_deactivate_color' vehicle_id=object.id%}" data-driver-id="{{ object.id }}" title="Activate Deactivate Vehicle Color"
+               class="activate-driver btn btn-danger btn-sm">
+                <i class="bi bi-x-circle"></i>
+             </a>
+             {%else%}
+                          <a href="{%url 'admin:activate_deactivate_color' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
+                            title="Activate Deactivate Vehicle Color" class="activate-driver btn btn-success btn-sm">
+                            <i class="bi bi-check-circle"></i>
+                          </a>
+
+             {%endif%}
+             <a href="{%url 'admin:update_color' vehicle_id=object.id%}" title="Update/View  Vehicle Color Information"
+                class="btn btn-primary btn-sm">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              </a>
+            {%endif%}
+
+        {% if perms.account.vehicle.delete_vehiclecolor or user.is_superuser %}
+             <a href="{% url 'admin:delete_color' vehicle_id=object.id %}" title="Delete Vehicle Color" class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
+                <i class="bi bi-archive"></i> 
+             </a>           
+            {%endif%}
+
+          </td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{%endblock%}
+{%block scripts%}
+{%endblock%}

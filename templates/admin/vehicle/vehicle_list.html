@@ -1,0 +1,104 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+
+<style>
+  .content-panel {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 600px;
+  }
+</style>
+
+{%endblock%}
+{%block drivers%}active{%endblock%}
+{%block drivers_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:get_all_vehicles'%}">Vehicle List</a></li>
+{%endblock%}
+{%block content%}
+
+<div class="card">
+  <div class="card-header">
+    {% if perms.account.vehicle.add_vehicle or user.is_superuser %}
+    <a type="button" href="{%url 'admin:create_vehicle'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
+      {%translate 'Add New vehicle'%}</a>
+    {%endif%}
+  </div>
+  <hr>
+  <div class="card-body">
+    <table class="table table-striped" id="hidden-table-info">
+      <thead>
+        <tr>
+          <th>{%translate 'No'%}</th>
+          <th>{%translate 'Plate Number'%}</th>
+          <th>{%translate 'Vehicle Type'%}</th>
+          <th>{%translate 'Color'%}</th>
+          <th>{%translate 'Make'%}</th>
+          <th>{%translate 'Model'%}</th>
+          <th class="hidden-phone">{%translate 'Production Year'%}</th>
+          <th class="hidden-phone">{%translate 'Is Available'%}</th>
+          <th>{%translate 'Action'%}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for object in vehicle_data%}
+        <tr class="gradeA">
+          <td>{{forloop.counter}}</td>
+          <td>{{object.plate_number}}</td>
+          <td>{{object.vehicle_type}}</td>
+          <td>{{object.color}}</td>
+          <td>{{object.brand}}</td>
+          <td>{{object.model}}</td>
+          <td class="center hidden-phone">{{object.production_year}}</td>
+                    <td class="center hidden-phone">
+                      {%if object.is_available %}
+                       Yes  
+                      {%else%}
+                       No
+                      {%endif%}  
+                      </td>
+     
+           <td>
+                {% if perms.account.vehicle.change_vehicle or user.is_superuser %}
+
+            {% if object.is_active %}
+            <a href="{%url 'admin:activate_deactivate_vehicle' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
+              title="Activate Deactivate Vehicle" class="activate-driver btn btn-danger btn-sm">
+              <i class="bi bi-x-circle"></i>
+            </a>
+                        {% else %}
+            <a href="{%url 'admin:activate_deactivate_vehicle' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
+              title="Activate Deactivate Vehicle" class="activate-driver btn btn-success btn-sm">
+              <i class="bi bi-check-circle"></i>
+            </a>
+                        {% endif %}
+
+             <a href="{%url 'admin:update_vehicle' vehicle_id=object.id%}" 
+                title="Update/View Vehicle Information"
+                class="btn btn-primary btn-sm">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+            </a>
+            {%endif%}
+
+            {% if perms.account.vehicle.delete_vehicle or user.is_superuser %}
+            <a href="{% url 'admin:recycle_vehicle' vehicle_id=object.id %}" title="Delete vehicle"
+                   onclick="return confirm('Are You Sure You Want To Delete this Vehicle?');" class="btn btn-danger btn-sm">
+                  <i class="bi bi-archive"></i> 
+            </a>            
+            {%endif%}
+          </td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{%endblock%}
+{%block scripts%}
+{%endblock%}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adinas - {subject} </title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="stylesheet" href="/static/css/pages/auth.css">
+  <style>
+    .form-control-icon {
+      left: 10px !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="auth">
+    <div class="row h-100">
+      <div class="col-lg-8 col-12">
+        <div id="auth-left">
+          <div class="auth-logo">
+            <a href="#">
+              <img src="https://adinascarrent.com/static/images/logo/logo-dark.png" alt="Logo" />
+            </a>
+          </div>
+          <h3>Dear {{data.full_name}}</h3>
+          <br>
+        </div>
+        <h4 class="auth-subtitle mb-5">
+          Hope this mail finds you well. You are receiving this notification to provide updates on the
+          {{data.event_type}} booking,
+          with consideration for potential vehicle assignments based on the booking specifications.
+        </h4>
+
+        <div class="text-center mt-5 text-lg fs-4">
+          <h4>
+            Here are the booking details for your reference:
+          </h4>
+          <br>
+          <li>Client's Name: <b>{{data.booking.client_info}}</b></li>
+          <li>Trip Date: From <b>{{data.booking.start_date}}</b> to <b>{{data.booking.end_date}}</b></li>
+          <li>Duration: <b>{{data.booking.duration}} Days</b></li>
+          <li>Location: <b>{{data.booking.pickup}}</b> to <b>{{data.booking.drop_off}}</b></li>
+
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+
+    <div>
+      <b>
+        This Booking is {{data.event_type}} in 2 days on <b>{{data.date}}</b>
+      </b>
+
+
+    </div>
+    <div>
+      <br />
+      <br />
+      <a href="{{ domain }}/admin/vehicle/request/assign/{{data.booking.id}}/" target="_blank">
+        View Vehicle Booking
+      </a>
+      </button>
+
+    </div>
+    <br>
+    <br>
+  </div>
+  <p style="margin: 0;">Cheers,<br>Adinas FMS</p>
+  </div>
+
+  </div>
+</body>
+
+</html>

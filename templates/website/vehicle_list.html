@@ -1,0 +1,105 @@
+{% extends 'website/base.html' %}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{% block content%}
+
+<style>
+  .content-panel {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 600px;
+  }
+</style>
+
+
+<div class="container overflow-hidden py-5 px-lg-0">
+  <div class="container contact-page py-5 px-lg-0">
+      <div class="row g-5 mx-lg-0">
+          <div class="col-md-12 contact-form wow fadeIn" data-wow-delay="0.1s">
+              <h6 class="text-secondary text-uppercase">My Vehicles List</h6>
+              <div class="bg-light p-0">
+                <div class="card">
+                   {% if not ignore_register %}
+                     <div class="card-header d-flex justify-content-between">
+                         <span></span> <!-- An empty span to push the button to the right -->
+                              <a type="button" href="{% url 'register_vehicle' %}" class="btn btn-outline-primary">
+                                <i class="fa fa-plus"></i> {% translate 'Add New Vehicle' %}
+                              </a>
+                     </div>
+                   {% endif %}
+                  <div class="card-body">
+                    <table class="table table-striped" id="hidden-table-info">
+                      <thead>
+                        <tr>
+                          <th>{%translate 'No'%}</th>
+                          <th>{%translate 'Plate Number'%}</th>
+                          <th>{%translate 'Vehicle Type'%}</th>
+                          <th>{%translate 'Color'%}</th>
+                          <th>{%translate 'Make'%}</th>
+                          <th>{%translate 'Model'%}</th>
+                          <th class="hidden-phone">{%translate 'Production Year'%}</th>
+                          <th class="hidden-phone">{%translate 'Is Available'%}</th>
+                          <th>{%translate 'Action'%}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {%for object in vehicle_data%}
+                        <tr class="gradeA">
+                          <td>{{forloop.counter}}</td>
+                          <td>{{object.plate_number}}</td>
+                          <td>{{object.vehicle_type}}</td>
+                          <td>{{object.color}}</td>
+                          <td>{{object.brand}}</td>
+                          <td>{{object.model}}</td>
+                          <td class="center hidden-phone">{{object.production_year}}</td>
+                          <td class="center hidden-phone">
+                            {% if object.is_available %}
+                            YES
+                            {% else %}
+                            NO
+                            {% endif %}
+                          </td>
+                          <!-- <td>
+                            {% if object.is_available %}
+                            <a href="{%url 'activate_deactivate_vehicle' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
+                              title="Activate Deactivate Vehicle" class="activate-driver btn btn-danger btn-sm">
+                              <i class="bi bi-x-circle"></i>
+                            </a>
+                            {%else%}
+                            <a href="{%url 'activate_deactivate_vehicle' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
+                                            title="Activate Deactivate Vehicle" class="activate-driver btn btn-success btn-sm">
+                                          <i class="bi bi-check-circle"></i>
+                            </a>
+                            {%endif%}
+                            <a href="{%url 'update_vehicle' vehicle_id=object.id%}" title="Update/View Vehicle Information"
+                              class="btn btn-primary btn-sm">
+                              <i class="bi bi-pencil-square"></i>
+                            </a>
+                            </a>
+        
+                            <a href="{% url 'delete_vehicle' vehicle_id=object.id %}" title="Delete vehicle"
+                              onclick="return confirm('Are You Sure You Want To Delete this Vehicle?');" class="btn btn-danger btn-sm">
+                              <i class="bi bi-archive"></i>
+                            </a>
+                          </td> -->
+                        </tr>
+                        {%endfor%}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+          </div>
+           
+      </div>
+  </div>
+</div> 
+
+
+<script>
+  // Simple Datatable
+  
+
+</script>
+{%endblock%}

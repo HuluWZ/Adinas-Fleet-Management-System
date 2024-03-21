@@ -1,0 +1,72 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+
+<style>
+  .errorlist {
+    color: red;
+  }
+</style>
+{%endblock%}
+
+{%block web%}active{%endblock%}
+{%block web_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:get_all_slider'%}">Slider List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:create_slider'%}">Slider Form</a></li>
+{%endblock%}
+{%block content%}
+<div class="card">
+  <h4 class="card-header">Register Slider Information</h4>
+  <div class="card-body">
+
+    <form role="form" action="{%url 'admin:create_slider'%}" method="POST" enctype="multipart/form-data"
+      class="form-horizontal  style-form">
+      {%csrf_token%}
+      <!-- {{form|crispy}} -->
+
+      <!-- second row -->
+      <div class="form-group row">
+        <div class="col-md-6">
+          <label>{{form.title.label}}</label>
+          {{form.title}}
+          <p class="alert-warning">{{form.title.errors}}</p>
+        </div>
+        <div class="col-md-6">
+             <label>{{form.image.label}}</label>
+                {{form.image}} &nbsp; &nbsp;{{form.image.help_text}}
+              <p class="alert-warning">{{form.image.errors}}</p>
+        </div>
+      </div>
+              
+              <!-- fourth row -->
+      <div class="form-group row">
+        <div class="col-md-12">
+          <label>{{form.description.label}}</label>
+          {{form.description}}
+          <p class="alert-warning">{{form.description.errors}}</p>
+        </div>
+      </div>
+
+      <!-- fifth row -->
+
+      <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+          <button type="submit" class="btn btn-primary" type="submit">{% translate 'Save'%}</button>
+          <a href="{%url 'admin:get_all_slider'%}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+{%endblock%}
+{%block scripts%}
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+{%endblock%}

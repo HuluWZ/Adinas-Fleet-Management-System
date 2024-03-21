@@ -1,0 +1,100 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+<style>
+  .errorlist {
+    color: red;
+  }
+  .image-link {
+    display: inline-block;
+}
+
+/* Style for circular or square shape */
+.rounded-image {
+    width: 100px; /* Adjust size as needed */
+    height: 100px; /* Adjust size as needed */
+    border-radius: 50%; /* For a circular shape; Use border-radius: 8px; for a square shape */
+    overflow: hidden;
+    border: 2px solid #ccc; /* Optional: Add border */
+}
+
+/* Style for the image */
+.rounded-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+/* Optional hover effect */
+.rounded-image:hover {
+    border-color: #000; /* Change border color on hover */
+}
+
+</style>
+{%endblock%}
+{%block web%}active{%endblock%}
+{%block web_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:get_all_testimonal'%}">Testimonal List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:get_one_testimonal' web_id=object.id%}">Testimonal  Detail</a></li>
+{%endblock%}
+
+{%block content%}
+<div class="card">
+  <h4 class="card-header">{% translate 'Testimonial Information'%}</h4>
+  <div class="card-body">
+
+    <form role="form" action="{%url 'admin:update_testimonal' web_id=object.id%}" method="POST" enctype="multipart/form-data"
+      class="form-horizontal  style-form">
+      {%csrf_token%}
+      <!-- {{form|crispy}} -->      
+      <!-- second row -->
+      <div class="form-group row">
+        <div class="col-md-6">
+          <label>{{form.full_name.label}}</label>
+          {{form.full_name}}
+          <p class="alert-warning">{{form.full_name.errors}}</p>
+        </div>
+        <div class="col-md-6">
+            <label>{{form.company_name.label}}</label>
+              {{form.company_name}}
+            <p class="alert-warning">{{form.company_name.errors}}</p>
+        </div>
+
+      </div>
+      
+      <!-- fourth row -->
+      <div class="form-group row">
+                <div class="col-md-12">
+                  <label>{{form.testimonal.label}}</label>
+                  {{form.testimonal}}
+                  <p class="alert-warning">{{form.testimonal.errors}}</p>
+                </div>
+
+      </div>
+
+      
+      <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+          <button type="submit" class="btn btn-primary">{% translate 'Save Changes'%}</button>
+          <a href="{%url 'admin:get_all_testimonal' %}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+
+{%endblock%}
+
+{%block scripts %}
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+
+{%endblock%}

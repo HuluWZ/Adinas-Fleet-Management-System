@@ -1,0 +1,492 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+<style>
+  .errorlist {
+    color: red;
+  }
+</style>
+{%endblock%}
+{%block requests%}active{%endblock%}
+{%block requests_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:get_all_request'%}">Vehicle Request List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a
+    href="{%url 'admin:get_one_request' vehicle_id=object.id%}">Vehicle Request Detail</a></li>
+{%endblock%}
+
+{%block content%}
+<div class="card">
+  <div class="card-header d-flex justify-content-end">
+    <div class="btn-group mb-3 btn-group-sm " role="group" aria-label="Basic example">
+      {% if assigned and assigned|length >= object.no_of_vehicles %}
+      {%else%}
+      <button type="button" class="btn btn-primary " data-bs-toggle="modal"
+        data-bs-target="#assignVehicleModal">Assign</button>
+      <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#smsVehicleModal">Send SMS</button>
+      <button type="button" data-bs-toggle="modal" data-bs-target="#inAppVehicleModal"  class="btn btn-warning">Send In App</button>
+      <a type="button" href="{% url 'admin:send_telegram' vehicle_id=object.id%}" class="btn btn-success">Send On Telegram</a>
+      {%endif%}
+      <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#showMoreInfoModal">More
+        info</button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="col-3" style="min-height: calc(50vh + 100px); max-height: calc(50vh + 140px); overflow-y: scroll;">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+          {% if assigned and assigned|length > 0 %}
+          {% for current_assigned in assigned %}
+          <a class="nav-link {% if forloop.first %}active{% endif %}" id="vehicle-{{ current_assigned.vehicle.id }}-tab"
+            data-bs-toggle="pill" href="#vehicle-{{ current_assigned.vehicle.id }}" role="tab"
+            aria-controls="vehicle-{{ current_assigned.vehicle.id }}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+            {{ current_assigned.vehicle.plate_number }}
+          </a>
+          {% endfor %}
+          {% else %}
+          <div class="text-center">
+            <div class="alert alert-info">
+              <h4 class="alert-heading">Pending</h4>
+              <p>Vehicles has not been assigned yet. </p>
+              <hr>
+              <a type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#assignVehicleModal">Assign Vehicles</a>
+            </div>
+          </div>
+
+          {%endif%}
+        </div>
+      </div>
+      <div class="col-9" style="min-height: calc(50vh + 100px); max-height: calc(50vh + 140px); overflow-y: scroll;">
+        {% if assigned and assigned|length > 0 %}
+        <div class="tab-content" id="v-pills-tabContent">
+          {% for current_assigned in assigned %}
+          <div class="tab-pane fade {% if forloop.first %}show active{% endif %}"
+            id="vehicle-{{ current_assigned.vehicle.id }}" role="tabpanel"
+            aria-labelledby="vehicle-{{ current_assigned.vehicle.id }}-tab">
+
+            <h5>{{ current_assigned.vehicle.plate_number }}</h5>
+
+            <div class="row">
+              <div class="col-sm-5">
+                <p><strong>Address</strong>: {{ current_assigned.vehicle.address }}</p>
+                <p><strong>Brand</strong>: {{ current_assigned.vehicle.brand }}</p>
+                <p><strong>Type</strong>: {{ current_assigned.vehicle.vehicle_type }}</p>
+                <p><strong>Color</strong>: {{ current_assigned.vehicle.color }}</p>
+                <p><strong>Model</strong>: {{ current_assigned.vehicle.color }}</p>
+              </div>
+              <div class="col-sm-5">
+                <p><strong>Transmission</strong>: {{ current_assigned.vehicle.transmission }}</p>
+                <p><strong>Fuel Type</strong>: {{ current_assigned.vehicle.fuel_type }}</p>
+                <p><strong>Driver Status</strong>: {{ current_assigned.vehicle.driver_status }}</p>
+                <p><strong>Production Year</strong>: {{ current_assigned.vehicle.production_year }}</p>
+                <p><strong>Price Per Day</strong>: {{ current_assigned.vehicle.price_per_day }}</p>
+
+              </div>
+              <div class="col-sm-2">
+                    <form id="removeAssignVehicleForm" method="POST"
+                          action="{% url 'admin:remove_assigned_request' vehicle_id=object.id  v_id=current_assigned.vehicle.id %}">
+                          <button type="button" class="btn btn-outline-danger ml-1" onclick="validateAndRemoveSubmit()">
+                                {%csrf_token%}
+                              <i class="bx bx-check d-block d-sm-none"></i>
+                              <span class="d-none d-sm-block">Terminate</span> 
+                            </button>                                  
+                      </form>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                          {% if current_assigned.vehicle and current_assigned.vehicle.images.all|length > 0 %}
+                          {% for imagePath in current_assigned.vehicle.images.all %}
+                          <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                            <img src="{{ imagePath.image.url }}" class="d-block w-100" style="width: auto; height: 350px;" alt="Slide {{ forloop.counter }}">
+                          </div>
+                          {% endfor %}
+                          {% else %}
+                          <!-- <p>No images available for this vehicle.</p> -->
+                          {% endif %}
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </a>
+                      </div>
+
+                    </div>
+              
+                  </div>
+              
+                </div>              
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+        {%else%}
+        <div class="row">
+          <div class="row">
+             <div class="col-sm-4">
+               <h5>Request Information</h5>
+               <p><strong>Number of Vehicles :</strong> {{ object.no_of_vehicles }}</p>
+               <p><strong>Origin :</strong> {{ object.pickup }}</p>
+               <p><strong>Destination :</strong> {{ object.drop_off }}</p>
+               <p><strong>Date :</strong> {{ object.start_date }} {{object.end_date}}</p>
+               <p><strong>Days :</strong>{{object.duration}}</p>
+             </div>
+             <div class="col-sm-4">
+               <h5>Vehicle Preference</h5>
+               <p><strong>Vehicle Type :</strong> {{ object.vehicle_type }}</p>
+               {% if object.brand %}
+               <p><strong>Vehicle Brand:</strong> {{ object.brand }}</p>
+               {% else %}
+               <p><strong>Vehicle Brand:</strong> Any</p>
+               {% endif %}
+               {% if object.model %}
+               <p><strong>Vehicle Model:</strong> {{ object.model }}</p>
+               {% else %}
+               <p><strong>Vehicle Model:</strong> Any</p>
+               {% endif %}
+               <p><strong>Production Year :</strong> {{ object.production_year }}</p>
+             </div>
+          </div>
+          </div>
+        </div>
+        {%endif%}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- Modal Block Start -->
+<div class="modal fade" id="assignVehicleModal" tabindex="-1" role="dialog" aria-labelledby="assignVehicleModalTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg"
+    role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignVehicleModalTitle">Available Vehicles To Assign </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <i data-feather="x"></i>
+        </button>
+      </div>
+      <form id="assignVehicleForm" role="form" action="{%url 'admin:assign_request' vehicle_id=object.id%}"
+        method="POST" class="form-horizontal  style-form">
+        {%csrf_token%}
+        <div class="modal-body">
+          <input type="text" id="searchField" onkeyup="searchFieldAction('searchField','assign-vehicle-list')" class="form-control mb-3" placeholder="Search ...">
+          <ul id="assign-vehicle-list" class="list-group">
+             <li class="list-group-item">
+                  <input class="form-check-input me-1" type="checkbox" id="select_all" name="select_all">
+                  <label for="select_all">Select All</label>
+             </li>
+            {% for choice in form.vehicle.field.choices %}
+            <li class="list-group-item vehicle-item">
+              <input class="form-check-input me-1 vehicle-checkbox" type="checkbox" id="vehicle_{{ choice.0 }}" name="vehicle"
+                value="{{ choice.0 }}" {% if choice.0 in form.vehicle.value %}checked{% endif %}>
+              <label for="vehicle_{{ choice.0 }}">
+                {{ choice.1 }}
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+            <i class="bx bx-x d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Close</span>
+          </button>
+          <button type="button" class="btn btn-primary ml-1" onclick="validateAndSubmit()" data-bs-dismiss="modal">
+            <i class="bx bx-check d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Submit Selected</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="smsVehicleModal" tabindex="-1" role="dialog" aria-labelledby="smsVehicleModalTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg"
+    role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignVehicleModalTitle">Send SMS To Assign </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <i data-feather="x"></i>
+        </button>
+      </div>
+      <form id="smsVehicleForm" role="form" action="{%url 'admin:assign_request_sms' vehicle_id=object.id%}"
+        method="POST" class="form-horizontal  style-form">
+        {%csrf_token%}
+        <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+          <input type="text" id="searchFieldSMS" onkeyup="searchFieldAction('searchFieldSMS','sms-vehicle-list')" class="form-control mb-3" placeholder="Search ...">
+          <ul id="sms-vehicle-list" class="list-group">
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="checkbox" id="select_sms_all" name="select_sms_all">
+                <label for="select_sms_all">Select All</label>
+            </li>
+            {% for choice in form.vehicle.field.choices %}
+            <li class="list-group-item choice-item">
+              <input class="form-check-input me-1 vehicle-sms-checkbox" type="checkbox" id="vehicle_{{ choice.0 }}" name="vehicle"
+                value="{{ choice.0 }}" {% if choice.0 in form.vehicle.value %}checked{% endif %}>
+              <label for="vehicle_{{ choice.0 }}">
+                {{ choice.1 }}
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+            <i class="bx bx-x d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Close</span>
+          </button>
+          <button type="button" class="btn btn-primary ml-1" onclick="validateAndSMSSubmit()" data-bs-dismiss="modal">
+            <i class="bx bx-check d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">SMS Selected</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="inAppVehicleModal" tabindex="-1" role="dialog" aria-labelledby="inAppVehicleModalTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg"
+    role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="inAppVehicleModalTitle">Send In App Messages About this Vehicle Booking </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <i data-feather="x"></i>
+        </button>
+      </div>
+      <form id="inAppVehicleForm" role="form" action="{%url 'admin:send_inapp_message' vehicle_id=object.id%}"
+        method="POST" class="form-horizontal  style-form">
+        {%csrf_token%}
+        <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+          <input type="text" id="searchFieldInApp" onkeyup="searchFieldAction('searchFieldInApp','inapp-vehicle-list')" class="form-control mb-3" placeholder="Search ...">
+          <ul id="inapp-vehicle-list" class="list-group">
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="checkbox" id="select_sms_all" name="select_sms_all">
+                <label for="select_sms_all">Select All</label>
+            </li>
+            {% for choice in form.vehicle.field.choices %}
+            <li class="list-group-item choice-item">
+              <input class="form-check-input me-1 vehicle-sms-checkbox" type="checkbox" id="vehicle_{{ choice.0 }}" name="vehicle"
+                value="{{ choice.0 }}" {% if choice.0 in form.vehicle.value %}checked{% endif %}>
+              <label for="vehicle_{{ choice.0 }}">
+                {{ choice.1 }}
+              </label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+            <i class="bx bx-x d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Close</span>
+          </button>
+          <button type="button" class="btn btn-primary ml-1" onclick="validateAndInAppSubmit()" data-bs-dismiss="modal">
+            <i class="bx bx-check d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Send Message</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="showMoreInfoModal" tabindex="-1" role="dialog" aria-labelledby="showMoreInfoModalTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg"
+    role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="showMoreInfoModalTitle">Vehicle Request Information</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <i data-feather="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+        <div class="row">
+          <div class="col-sm-6">
+            <h5>Request Information</h5>
+            <p><strong>Number of Vehicles :</strong> {{ object.no_of_vehicles }}</p>
+            <p><strong>Origin :</strong> {{ object.pickup }}</p>
+            <p><strong>Destination :</strong> {{ object.drop_off }}</p>
+            <p><strong>Date :</strong> {{ object.start_date }} {{object.end_date}}</p>
+            <p><strong>Days :</strong>{{object.duration}}</p>
+          </div>
+          <div class="col-sm-6">
+            <h5>Vehicle Preference</h5>
+            <p><strong>Vehicle Type :</strong> {{ object.vehicle_type }}</p>
+            {% if object.brand %}
+            <p><strong>Vehicle Brand:</strong> {{ object.brand }}</p>
+            {% else %}
+            <p><strong>Vehicle Brand:</strong> Any</p>
+            {% endif %}
+            {% if object.model %}
+            <p><strong>Vehicle Model:</strong> {{ object.model }}</p>
+            {% else %}
+            <p><strong>Vehicle Model:</strong> Any</p>
+            {% endif %}
+            <p><strong>Production Year :</strong> {{ object.production_year }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+          <i class="bx bx-x d-block d-sm-none"></i>
+          <span class="d-none d-sm-block">Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{%endblock%}
+
+{%block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const selectAllCheckbox = document.getElementById('select_all');
+      const selectAllSMSCheckbox = document.getElementById('select_sms_all');
+
+      const vehicleCheckboxes = document.querySelectorAll('.vehicle-checkbox');
+      const vehicleCheckSMSboxes = document.querySelectorAll('.vehicle-sms-checkbox');
+
+      // Function to toggle the "Select All" checkbox
+      function toggleSelectAll() {
+        selectAllCheckbox.checked = !selectAllCheckbox.checked;
+        selectAllSMSCheckbox.checked = !selectAllSMSCheckbox.checked;
+
+        vehicleCheckboxes.forEach(function (checkbox) {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+
+        vehicleCheckSMSboxes.forEach(function (checkbox) {
+          checkbox.checked = selectAllSMSCheckbox.checked;
+        });
+      }
+
+      selectAllCheckbox.addEventListener('change', function () {
+        vehicleCheckboxes.forEach(function (checkbox) {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+      });
+      
+      selectAllSMSCheckbox.addEventListener('change', function () {
+        vehicleCheckSMSboxes.forEach(function (checkbox) {
+          checkbox.checked = selectAllSMSCheckbox.checked;
+        });
+      });
+
+
+      vehicleCheckboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+          if (!this.checked) {
+            selectAllCheckbox.checked = false;
+          } else {
+            // Check if all other checkboxes are checked
+            const allChecked = Array.from(vehicleCheckboxes).every(function (checkbox) {
+              return checkbox.checked;
+            });
+            selectAllCheckbox.checked = allChecked;
+          }
+        });
+
+        // Toggle "Select All" on double-click
+        checkbox.addEventListener('dblclick', function () {
+          toggleSelectAll();
+        });
+      });
+
+      vehicleCheckSMSboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+          if (!this.checked) {
+            selectAllSMSCheckbox.checked = false;
+          } else {
+            const allChecked = Array.from(vehicleCheckSMSboxes).every(function (checkbox) {
+              return checkbox.checked;
+            });
+            selectAllSMSCheckbox.checked = allChecked;
+          }
+        });
+
+        // Toggle "Select All" on double-click
+        checkbox.addEventListener('dblclick', function () {
+          toggleSelectAll();
+        });
+      });
+
+      // Toggle "Select All" on double-click for the label as well
+      selectAllCheckbox.nextElementSibling.addEventListener('dblclick', function () {
+        toggleSelectAll();
+      });
+      selectAllSMSCheckbox.nextElementSibling.addEventListener('dblclick', function () {
+        toggleSelectAll();
+      });
+
+    });
+
+    function validateAndSubmit() {
+      document.getElementById('assignVehicleForm').submit();    
+    }
+    function validateAndSMSSubmit() {
+       document.getElementById('smsVehicleForm').submit();
+    }
+    function validateAndInAppSubmit() {
+       document.getElementById('inAppVehicleForm').submit();
+    }
+    function validateAndRemoveSubmit(){
+      document.getElementById('removeAssignVehicleForm').submit();     
+    }
+</script>
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+<script src="/static/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  
+    function searchFieldAction(inputId,listItemID){
+      var searchContent = document.getElementById(`${inputId}`).value;
+      searchList(searchContent.toLowerCase(),listItemID);
+    }
+    function searchList(input,listItemID) {
+      const items = document.querySelectorAll(`#${listItemID} li`);
+      items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(input)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+{%endblock%}

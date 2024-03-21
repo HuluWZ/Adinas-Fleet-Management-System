@@ -1,0 +1,233 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+<style>
+  .errorlist {
+    color: red;
+  }
+  .image-link {
+    display: inline-block;
+}
+
+/* Style for circular or square shape */
+.rounded-image {
+    width: 100px; /* Adjust size as needed */
+    height: 100px; /* Adjust size as needed */
+    border-radius: 50%; /* For a circular shape; Use border-radius: 8px; for a square shape */
+    overflow: hidden;
+    border: 2px solid #ccc; /* Optional: Add border */
+}
+
+/* Style for the image */
+.rounded-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+/* Optional hover effect */
+.rounded-image:hover {
+    border-color: #000; /* Change border color on hover */
+}
+
+    #profileImageModal .modal-body {
+    width: 300px; /* Set a fixed width for the image container */
+    height: 300px; /* Set a fixed height for the image container */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Horizontally center the image */
+    align-items: center; /* Vertically center the image */
+  }
+
+  #profileImageModal .modal-body img {
+    max-width: 100%; /* Ensure the image fits within the container */
+    max-height: 100%; /* Ensure the image fits within the container */
+    object-fit: contain; /* Maintain aspect ratio within the square */
+  }
+
+  /* Adjustments for Driver's License Image Modal */
+  #licenseImageModal .modal-body {
+    width: 300px; /* Set a fixed width for the image container */
+    height: 300px; /* Set a fixed height for the image container */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Horizontally center the image */
+    align-items: center; /* Vertically center the image */
+  }
+
+  #licenseImageModal .modal-body img {
+    max-width: 100%; /* Ensure the image fits within the container */
+    max-height: 100%; /* Ensure the image fits within the container */
+    object-fit: contain; /* Maintain aspect ratio within the square */
+  }
+
+</style>
+{%endblock%}
+{%block drivers%}active{%endblock%}
+{%block drivers_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:get_all_owners'%}">Owners List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:get_one_owner' driver_id=object.id%}">Owner  Detail</a></li>
+{%endblock%}
+
+{%block content%}
+<div class="card">
+  <h4 class="card-header">{% translate 'Owner Information'%}</h4>
+  <div class="card-body">
+
+    <form role="form" action="{%url 'admin:update_owner' driver_id=object.id%}" method="POST" enctype="multipart/form-data"
+      class="form-horizontal  style-form">
+      {%csrf_token%}
+      <!-- {{form|crispy}} -->      
+      <!-- second row -->
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.username.label}}</label>
+          {{form.username}}
+          <p class="alert-warning">{{form.username.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.first_name.label}}</label>
+          {{form.first_name}}
+          <p class="alert-warning">{{form.first_name.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.last_name.label}}</label>
+          {{form.last_name}}
+          <p class="alert-warning">{{form.last_name.errors}}</p>
+        </div>
+      </div>
+      
+      <!-- second row -->
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.email.label}}</label>
+          {{form.email}}
+          <p class="alert-warning">{{form.email.errors}}</p>
+        </div>
+      
+        <div class="col-md-4">
+          <label>{{form.phone_number.label}}</label>
+          {{form.phone_number}}
+          <p class="alert-warning">{{form.phone_number.errors}}</p>
+        </div>
+      
+        <div class="col-md-4">
+          <label>{{form.gender.label}}</label>
+          {{form.gender}}
+          <p class="alert-warning">{{form.gender.errors}}</p>
+        </div>
+      </div>
+      
+      <!-- third row -->
+      <div class="form-group row">
+        <div class="col-md-4">
+              <label>{{form.address.label}}</label>
+              {{form.address}}
+              <p class="alert-warning">{{form.address.errors}}</p>
+        </div>
+
+        <div class="col-md-4">
+            <label>{{form.profile_image.label}}</label>
+            <div class="input-group">
+              {{form.profile_image}}
+              {%if object.account.profile_image%}
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" type="button">
+                View
+              </button>
+              {%endif%}
+            </div>
+            {{form.profile_image.help_text}}
+            <p class="alert-warning">{{form.profile_image.errors}}</p>
+        </div>
+<div class="col-md-4">
+  <label>{{ form.role.label }}</label>
+  {% for value, label in form.role.field.choices %}
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="{{ form.role.name }}"
+      id="id_{{ form.role.name }}_{{ forloop.counter }}" value="{{ value }}" 
+      {% if value == 'driver' and object.account.is_driver %}checked{% endif %} 
+      {% if value == 'owner' and object.account.is_owner %}checked{% endif %} 
+      {% if value == 'both' and object.account.is_both %}checked{% endif %}>
+    <label class="form-check-label" for="id_{{ form.role.name }}_{{ forloop.counter }}">{{ label }}</label>
+  </div>
+  {% endfor %}
+  <p class="alert-warning">{{ form.role.errors }}</p>
+</div>
+      </div>
+
+                    <div class="card-body">
+                      <div class="col-md-6">
+                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                          aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Owner Profile</h5>
+                                </h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                  <i data-feather="x"></i>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="modal-body text-center">
+                                  {%if object.account.profile_image%}
+                                  <img id="profileImage" src="{{ object.account.profile_image.url }}" class="img-fluid" alt="Profile Image">
+                                  {%endif%}
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                  <i class="bx bx-x d-block d-sm-none"></i>
+                                  <span class="d-none d-sm-block">Close</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+      
+      <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+          <button type="submit" class="btn btn-primary">{% translate 'Save Changes'%}</button>
+          <a href="{%url 'admin:get_all_owners' %}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+
+{%endblock%}
+
+{%block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const openProfileModalBtn = document.getElementById("openProfileModalBtn");
+      const profileImageModal = document.getElementById("profileImageModal");
+      const profileImage = document.getElementById("profileImage");
+
+      openProfileModalBtn.addEventListener("click", function () {
+        const myProfileModal = new bootstrap.Modal(profileImageModal);
+        myProfileModal.show();
+      });
+
+      const openLicenseModalBtn = document.getElementById("openLicenseModalBtn");
+      const licenseImageModal = document.getElementById("licenseImageModal");
+      const licenseImage = document.getElementById("licenseImage");
+
+      openLicenseModalBtn.addEventListener("click", function () {
+        const myLicenseModal = new bootstrap.Modal(licenseImageModal);
+        myLicenseModal.show();
+      });
+    });
+</script>
+
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+
+{%endblock%}

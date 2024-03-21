@@ -1,0 +1,43 @@
+{% extends 'website/base.html' %}
+{% load i18n %}
+{% block content%}
+<!-- Contact Start -->
+    <div class="container overflow-hidden py-5 px-lg-0">
+        <div class="container contact-page py-5 px-lg-0">
+            <div class="row g-5 mx-lg-0">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 contact-form wow fadeIn" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase">ENTER Phone Number to login</h6>
+                    <div class="bg-light p-4">
+                <form role="form" action="{%url 'send_otp'%}" method="POST"
+                   enctype="multipart/form-data" class="form-horizontal  style-form">
+                                    {%csrf_token%} 
+                   <div class="row g-3">
+                    <div class="col-md-12">
+                        {{form.phone_number}}
+                        <p class="alert-warning">{{form.phone_number.errors}}</p>
+                    </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <button type="submit" class="btn btn-success" type="submit"> GET OTP</button>
+                            <a href="{%url 'web_index'%}" class="btn btn-danger" type="button">Cancel</a>
+                        </div>
+                    </div>
+
+                </form>
+                    </div>
+                    <hr>
+                    <div>
+                        <a href="{% url 'signup' %}"> Dont have an account ? Create Account
+                        </a>
+                    </div>
+
+                </div>
+                <div class="col-md-3"></div>
+                 
+            </div>
+        </div>
+    </div>
+    <!-- Contact End -->
+ {%endblock%}

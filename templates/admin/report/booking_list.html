@@ -1,0 +1,397 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n static %}
+{% load crispy_forms_tags %}
+{%block extrastyle%}
+
+<style>
+  .content-panel {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 600px;
+  }
+</style>
+
+{%endblock%}
+{%block report%}active{%endblock%}
+{%block report_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:get_all_request'%}">Vehicle Request
+    List</a></li>
+{%endblock%}
+{%block content%}
+
+<div class="card">
+  <div class="card-header">
+    <form id="yearForm" method="get" action="{% url 'admin:get_all_filter_booking' %}">
+      <div class="form-group row">
+        <div class="col-md-3">
+          <label for="year">Select Vehicle Type </label>
+          <select class="choices form-select" name="year" id="year">
+            <option value="" {% if not selected_type %}selected{% endif %}>Select Vehicle Type</option>
+            {% for year in vehicle_type %}
+            <option value="{{ year.id }}" {% if selected_type == year.id %}selected{% endif %}>
+              {{ year }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="client">Select Client </label>
+          <select class="choices form-select" name="client" id="client">
+            <option value="" {% if not selected_client %}selected{% endif %}>Select Client</option>
+            {% for client in clients %}
+            <option value="{{ client.id }}" {% if selected_client == client.id %}selected{% endif %}>
+              {{ client }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="start_date">Select Start Date</label>
+          <input type="date" id="start_date" name="start_date" class="form-control" value="{{start_date}}">
+        </div>
+        <div class="col-md-2">
+          <label for="end_date">Select End Date</label>
+          <input type="date" id="end_date" name="end_date" class="form-control" value="{{end_date}}">
+        </div>
+        <div class="col-md-2">
+          <br>
+          <div class="col-md-12 offset-4">
+            <button id="clearFilters" class="btn btn-xs btn-danger rounded-pill">Clear Filters</button>
+          </div>
+        </div>
+
+
+
+      </div>
+      <hr>
+    </form>
+
+  </div>
+  <div class="card-body">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home"
+          aria-selected="true">Tabular Report</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+          aria-selected="false">Graph Report </a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="card-body">
+          <table class="table table-striped" id="hidden-table-info">
+            <thead>
+              <tr>
+                <th>{%translate 'No'%}</th>
+                <th>{%translate 'Client Info'%}</th>
+                <th>{%translate 'Vehicle Type'%}</th>
+                <th>{%translate 'Start Date'%}</th>
+                <th>{%translate 'End Date'%}</th>
+                <th>{%translate 'Make'%}</th>
+                <th>{%translate 'Model'%}</th>
+                <th class="hidden-phone">{%translate 'Is Completed'%}</th>
+                <th>{%translate 'Action'%}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%for object in vehicle_data%}
+              <tr class="gradeA">
+                <td>{{forloop.counter}}</td>
+                <td>{{object.client_info}}</td>
+                <td>{{object.vehicle_type}}</td>
+                <td>{{object.start_date}}</td>
+                <td>{{object.end_date}}</td>
+                <td>{{object.brand}}</td>
+                <td>{{object.model}}</td>
+                <td class="center hidden-phone">
+                  {% if object.is_completed %}
+                  YES
+                  {% else %}
+                  NO
+                  {% endif %}
+                </td>
+
+                <td>
+                  {% if perms.accounts.change_userprofile%}
+                  {% if object.is_active %}
+                  <a href="{%url 'admin:activate_deactivate_request' vehicle_id=object.id%}"
+                    data-driver-id="{{ object.id }}" title="Activate Deactivate Vehicle Request"
+                    class="activate-driver btn btn-danger btn-sm">
+                    <i class="bi bi-x-circle"></i>
+                  </a>
+
+                  {% else %}
+                  <a href="{%url 'admin:activate_deactivate_request' vehicle_id=object.id%}"
+                    data-driver-id="{{ object.id }}" title="Activate Deactivate Vehicle Request"
+                    class="activate-driver btn btn-success btn-sm">
+                    <i class="bi bi-check-circle"></i>
+                  </a>
+
+                  {% endif %}
+
+                  <a href="{%url 'admin:update_request' vehicle_id=object.id%}"
+                    title="Update/View Vehicle Request Information" class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                  </a>
+                  <a href="{%url 'admin:assign_request' vehicle_id=object.id  %}" title="Assign Vehicle Request"
+                    class="btn btn-warning btn-sm">
+                    <i class="bi bi-arrow-90deg-up"></i>
+                  </a>
+                  </a>
+                  {%endif%}
+
+                  {% if perms.accounts.delete_user_profile%}
+                  <a href="{% url 'admin:recycle_request' vehicle_id=object.id %}" title="Delete vehicle"
+                    onclick="return confirm('Are You Sure You Want To Delete this Vehicle Request?');"
+                    class="btn btn-danger btn-sm">
+                    <i class="bi bi-archive"></i>
+                  </a>
+                  {%endif%}
+                </td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <div class="card-body">
+          <div class="form-group row">
+            <div class="col-md-12">
+              <div class="card-header">
+                <h5> Vehicle Type</h5>
+              </div>
+              <div class="card-body" id="vehicle_type">
+
+              </div>
+            </div>
+            <div class="col-md-12" id="client">
+              <div class="card-header">
+                <h5>Client</h5>
+                <div class="hidden" id="hidden_data_type" data-value="{{ type_data|safe }}"
+                  data-another-value="{{type_label|safe}}"></div>
+
+              </div>
+              <div class="card-body">
+                <div class="hidden" id="hidden_data" data-value="{{ label_counts|safe }}"
+                  data-another-value="{{data_counts|safe}}">
+                </div>
+                <canvas id="myPieChart" width="400" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{%endblock%}
+{%block scripts%}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.2/dist/apexcharts.min.js"></script>
+<script>
+  // Simple Datatable
+  document.addEventListener("DOMContentLoaded", function () {
+    event.preventDefault();
+
+    document.getElementById("clearFilters").addEventListener("click", function () {
+      event.preventDefault()
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+      searchParams.set('vehicle_type', '');
+      searchParams.set('client', '');
+      searchParams.set('start_date', '');
+      searchParams.set('end_date', '');
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl;
+
+    });
+
+    var hiddenInputType = document.getElementById("hidden_data_type");
+    var rawValueType = hiddenInputType.getAttribute("data-value");
+    var rawValueDataType = hiddenInputType.getAttribute("data-another-value");
+    var dataValueType = JSON.parse(rawValueType).map(Number);
+    var dataLabelType = rawValueDataType.slice(1, -1).split(", ");
+
+
+    var hiddenInput = document.getElementById("hidden_data");
+    var rawValue = hiddenInput.getAttribute("data-value");
+    var rawValueData = hiddenInput.getAttribute("data-another-value");
+    var dataValue = JSON.parse(rawValueData).map(Number);
+    var dataLabel = rawValue.slice(1, -1).split(", ");
+    console.log(dataLabel, dataValue)
+    const arrayOfObjects = [];
+
+    for (let i = 0; i < dataValueType.length; i++) {
+      const obj = {
+        name: dataLabelType[i].replace(/"/g, ''),
+        data: [dataValueType[i]]
+      };
+      arrayOfObjects.push(obj);
+    }
+
+    console.log(arrayOfObjects);
+
+    var barOptions = {
+      series: arrayOfObjects,
+      chart: {
+        type: "bar",
+        height: 250,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: "35%",
+          endingShape: "rounded",
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        show: true,
+        width: 1,
+        colors: ["transparent"],
+      },
+      xaxis: {
+        categories: ["Vehicle Type"],
+      },
+      yaxis: {
+        title: {
+          text: "$ (count)",
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return " " + val + "  Vehicles";
+          },
+        },
+      },
+    };
+
+
+
+    var labels = dataLabel
+    var data = dataValue
+    var backgroundColors = getBackgroundColors(labels.length);
+    var ctx = document.getElementById('myPieChart').getContext('2d');
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Client Count',
+          data: data,
+          backgroundColor: backgroundColors,
+          borderColor: backgroundColors,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+    function getBackgroundColors(count) {
+      var colors = [];
+      for (var i = 0; i < count; i++) {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        colors.push('rgba(' + r + ',' + g + ',' + b + ',1.0)');
+      }
+      return colors;
+    }
+
+    document.getElementById('year').addEventListener('change', function () {
+      var selectedYear = this.value;
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+      if (searchParams.has('vehicle_type')) {
+        searchParams.set('vehicle_type', selectedYear);
+      } else {
+        searchParams.append('vehicle_type', selectedYear);
+      }
+
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      console.log(" Year ", newUrl)
+      window.location.href = newUrl;
+    });
+
+    document.getElementById('client').addEventListener('change', function () {
+      var selectedYear = this.value;
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+
+      if (searchParams.has('client')) {
+        searchParams.set('client', selectedYear);
+      } else {
+        searchParams.append('client', selectedYear);
+      }
+
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl;
+    });
+
+    document.getElementById('start_date').addEventListener('change', function () {
+      var selectedYear = this.value;
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+
+      if (searchParams.has('start_date')) {
+        searchParams.set('start_date', selectedYear);
+      } else {
+        searchParams.append('start_date', selectedYear);
+      }
+
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl;
+
+    });
+    document.getElementById('end_date').addEventListener('change', function () {
+      var selectedYear = this.value;
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+
+      if (searchParams.has('end_date')) {
+        searchParams.set('end_date', selectedYear);
+      } else {
+        searchParams.append('end_date', selectedYear);
+      }
+
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl;
+
+    });
+
+    var area = new ApexCharts(document.querySelector("#vehicle_type"), barOptions);
+
+    area.render();
+
+  })
+</script>
+{%endblock%}

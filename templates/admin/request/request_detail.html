@@ -1,0 +1,161 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+<style>
+  .errorlist {
+    color: red;
+  }
+
+  /* Style for the image container */
+  .image-link {
+    display: inline-block;
+  }
+
+  /* Style for circular or square shape */
+  .rounded-image {
+    width: 100px;
+    /* Adjust size as needed */
+    height: 100px;
+    /* Adjust size as needed */
+    border-radius: 50%;
+    /* For a circular shape; Use border-radius: 8px; for a square shape */
+    overflow: hidden;
+    border: 2px solid #ccc;
+    /* Optional: Add border */
+  }
+
+  /* Style for the image */
+  .rounded-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Maintain aspect ratio */
+  }
+
+  /* Optional hover effect */
+  .rounded-image:hover {
+    border-color: #000;
+    /* Change border color on hover */
+  }
+</style>
+{%endblock%}
+{%block requests%}active{%endblock%}
+{%block requests_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:get_all_request'%}">Vehicle Request List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a
+    href="{%url 'admin:get_one_request' vehicle_id=object.id%}">Vehicle Request Detail</a></li>
+{%endblock%}
+
+{%block content%}
+<div class="card">
+  <h4 class="card-header">{% translate 'Vehicle Request Information'%}</h4>
+  <div class="card-body">
+
+    <form role="form" action="{%url 'admin:update_request' vehicle_id=object.id%}" method="POST"
+      enctype="multipart/form-data" class="form-horizontal  style-form">
+      {%csrf_token%}
+
+      <!-- {{form|crispy}} -->
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.client_info.label}}</label>
+          {{form.client_info}}
+          <p class="alert-warning">{{form.client_info.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.pickup.label}}</label>
+          {{form.pickup}}
+          <p class="alert-warning">{{form.pickup.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.drop_off.label}}</label>
+          {{form.drop_off}}
+          <p class="alert-warning">{{form.drop_off.errors}}</p>
+        </div>
+      </div>
+
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.vehicle_type.label}}</label>
+          {{form.vehicle_type}}
+          <p class="alert-warning">{{form.vehicle_type.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.brand.label}}</label>
+          {{form.brand}}
+          <p class="alert-warning">{{form.brand.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.model.label}}</label>
+          {{form.model}}
+          <p class="alert-warning">{{form.model.errors}}</p>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.production_year.label}}</label>
+          {{form.production_year}}
+          <p class="alert-warning">{{form.production_year.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.daily_price.label}}</label>
+          {{form.daily_price}}
+          <p class="alert-warning">{{form.daily_price.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.no_of_vehicles.label}}</label>
+          {{form.no_of_vehicles}}
+          <p class="alert-warning">{{form.no_of_vehicles.errors}}</p>
+        </div>
+        
+      </div>
+      <!-- fourth row -->
+      <div class="form-group row">
+        
+        <div class="col-md-4">
+          <label>{{form.start_date.label}}</label>
+          {{form.start_date}}
+          <p class="alert-warning">{{form.start_date.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.end_date.label}}</label>
+          {{form.end_date}}
+          <p class="alert-warning">{{form.end_date.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.remark.label}}</label>
+          {{form.remark}}
+          <p class="alert-warning">{{form.remark.errors}}</p>
+        </div>
+      </div>
+
+
+
+
+      <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+          <button type="submit" class="btn btn-primary">{% translate 'Save Changes'%}</button>
+          <a href="{%url 'admin:get_all_request' %}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+
+{%endblock%}
+
+{%block scripts %}
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+
+{%endblock%}

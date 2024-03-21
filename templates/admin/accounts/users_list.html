@@ -1,0 +1,82 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<style>
+  .content-panel{
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 600px;
+  }
+
+</style>
+
+{%endblock%}
+{%block users%}active{%endblock%}
+{%block users_submenu%}active{%endblock%}
+{%block page_title%}
+  <h3>{{subtitle}}</h3>
+  {%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:users_list'%}">Users List</a></li>
+{%endblock%}
+{%block content%} 
+
+<div class="card">
+  <div class="card-header">
+    {% if perms.accounts.accounts.add_useraccount or user.is_superuser %}
+      <a type="button" href="{%url 'admin:create_my_staff'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i> {%translate 'Add New User'%}</a>
+    {%endif%}
+    </div>
+    <hr>
+  <div class="card-body">
+    <table class="table table-striped" id="hidden-table-info">
+      <thead>
+        <tr>
+          <th>{%translate 'No'%}</th>
+          <th>{%translate 'Full Name'%}</th>
+          <th class="hidden-phone">{%translate 'User Name'%}</th>
+          <th class="hidden-phone">{%translate 'Email'%}</th>
+          <th class="hidden-phone">{%translate 'Phone Number'%}</th>
+          <th>{%translate 'Action'%}</th>
+        </tr>
+      </thead>
+      <tbody>
+          {%for object in object_list%}
+        <tr class="gradeA">
+          <td>{{forloop.counter}}</td>
+          <td>{{object.first_name}} {{object.last_name}}</td>
+          <td class="hidden-phone">
+            {{object.username}} <br>
+            :{%if object.is_driver%} <span class="badge bg-secondary">Driver</span>
+            {%elif object.is_owner%}<span class="badge bg-secondary">Owner</span>
+            {%elif object.is_client%}<span class="badge bg-secondary">Client</span>
+            {%elif object.is_both%}<span class="badge bg-secondary">Both</span>
+            {%else%}<span class="badge bg-secondary">Staff</span>{%endif%}
+          </td>
+          <td class="center hidden-phone">{{object.email}}</td>
+          <td class="center hidden-phone">{{object.phone_number}}</td>
+          <td> 
+    {% if perms.accounts.accounts.change_useraccount or user.is_superuser %}
+              {%if object.is_active%}
+              <a href="{%url 'admin:suspend_user' pk=object.id option='suspend'%}" title="Suspend User Account" class="btn btn-danger btn-sm"><i class="bi bi-x-circle"></i></a>
+              {%else%}
+              <a href="{%url 'admin:suspend_user' pk=object.id option='enable'%}" title="Activate User Account" class="btn btn-success btn-sm"><i class="bi bi-check-circle"></i></a>
+              {%endif%}
+              <a href="{%url 'admin:user_detail' pk=object.id%}" title="Update/View User Information" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a>
+              <a href="{%url 'admin:change_user_password' pk=object.id %}"  title="Change User Password" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+              {%endif%}
+        {% if perms.accounts.accounts.delete_useraccount or user.is_superuser %}
+              <a href="{%url 'admin:delete_user' pk=object.id%}" title="Delete User" onclick="return confirm('Are You Sure You Want To Delete this User?');" class="btn btn-danger btn-sm"><i class="bi bi-archive"></i></a>
+              {%endif%}  
+              
+          </td>
+        </tr>
+         {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{%endblock%} 
+{%block scripts%}
+{%endblock%}

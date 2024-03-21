@@ -1,0 +1,117 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+
+<style>
+  .content-panel {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 600px;
+  }
+</style>
+
+{%endblock%}
+{%block requests%}active{%endblock%}
+{%block requests_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:get_all_request'%}">Vehicle  Request List</a></li>
+{%endblock%}
+{%block content%}
+<div class="card">
+  <div class="card-header">
+    {% if perms.account.booking.add_vehiclebooking or user.is_superuser %}
+    <a type="button" href="{%url 'admin:create_request'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
+      {%translate 'Add New Vehicle Request'%}</a>
+    {%endif%}
+  </div>
+  <hr>
+  <div class="card-body">
+    <table class="table table-striped" id="hidden-table-info">
+      <thead>
+        <tr>
+          <th>{%translate 'No'%}</th>
+          <th>{%translate 'Client Info'%}</th>
+          <th>{%translate 'Vehicle Type'%}</th>
+          <th>{%translate 'Start Date'%}</th>
+          <th>{%translate 'End Date'%}</th>
+          <th>{%translate 'Make'%}</th>
+          <th>{%translate 'Model'%}</th>
+          <th class="hidden-phone">{%translate 'Is Completed'%}</th>
+          <th>{%translate 'Action'%}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for object in vehicle_data%}
+        <tr class="gradeA">
+          <td>{{forloop.counter}}</td>
+          <td>{{object.client_info}}</td>
+          <td>{{object.vehicle_type}}</td>
+          <td>{{object.start_date}}</td>
+          <td>{{object.end_date}}</td>
+          <td>{{object.brand}}</td>
+          <td>{{object.model}}</td>
+          <td class="center hidden-phone">
+            {% if object.is_completed %}
+            YES
+            {% else %}
+            NO
+            {% endif %}
+          </td>
+                 
+           <td>
+            {% if perms.accounts.booking.change_vehiclebooking or user.is_superuser %}
+                        {% if object.is_active %}
+                                    <a href="{%url 'admin:activate_deactivate_request' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
+                                      title="Activate Deactivate Vehicle Request" class="activate-driver btn btn-danger btn-sm">
+                                      <i class="bi bi-x-circle"></i>
+                                    </a>
+
+                        {% else %}
+                                    <a href="{%url 'admin:activate_deactivate_request' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
+                                      title="Activate Deactivate Vehicle Request" class="activate-driver btn btn-success btn-sm">
+                                      <i class="bi bi-check-circle"></i>
+                                    </a>
+
+                        {% endif %}
+
+             <a href="{%url 'admin:update_request' vehicle_id=object.id%}" 
+                title="Update/View Vehicle Request Information"
+                class="btn btn-primary btn-sm">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+            </a>
+            {%endif%}
+                        {% if perms.accounts.booking.add_assignedvehicle or user.is_superuser %}
+
+            <a href="{%url 'admin:assign_request' vehicle_id=object.id  %}" title="Assign Vehicle Request"
+              class="btn btn-warning btn-sm">
+              <i class="bi bi-arrow-90deg-up"></i>
+            </a>
+            </a>
+                        {%endif%}
+
+            {% if perms.accounts.booking.delete_vehiclebooking or user.is_superuser%}
+            <a href="{% url 'admin:recycle_request' vehicle_id=object.id %}" title="Delete vehicle"
+                   onclick="return confirm('Are You Sure You Want To Delete this Vehicle Request?');" class="btn btn-danger btn-sm">
+                  <i class="bi bi-archive"></i> 
+            </a>            
+            {%endif%}
+          </td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{%endblock%}
+{%block scripts%}
+
+<script>
+  // Simple Datatable
+
+</script>
+{%endblock%}

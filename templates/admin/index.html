@@ -1,0 +1,374 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+{% load auth_template_tags %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="/static/vendors/apexcharts/apexcharts.min.css">
+<script>
+    const myToken = "{{user|cog_auth_token}}";
+</script>
+<script src="/static/vendors/jquery/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+<script src="/static/js/firebase.js"></script>
+{% endblock %}
+
+{%block dashboard%}active{%endblock%}
+{%block page_title%}
+<h3>Dashboard</h3>
+{%endblock%}
+
+{% block content %}
+ 
+<section class="row">
+    
+    <div class="col-12 col-lg-9">
+        <div class="row">
+
+            <div class="col-6 col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body px-3 py-4-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stats-icon purple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-person-vcard-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5M9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8m1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5m-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96q.04-.245.04-.5M7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h6 class="text-muted font-semibold">Drivers</h6>
+                                <h6 class="font-extrabold mb-0">{{driver}}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body px-3 py-4-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stats-icon blue">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-dpad-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M6.5 0A1.5 1.5 0 0 0 5 1.5v3a.5.5 0 0 1-.5.5h-3A1.5 1.5 0 0 0 0 6.5v3A1.5 1.5 0 0 0 1.5 11h3a.5.5 0 0 1 .5.5v3A1.5 1.5 0 0 0 6.5 16h3a1.5 1.5 0 0 0 1.5-1.5v-3a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 0 16 9.5v-3A1.5 1.5 0 0 0 14.5 5h-3a.5.5 0 0 1-.5-.5v-3A1.5 1.5 0 0 0 9.5 0zm1.288 2.34a.25.25 0 0 1 .424 0l.799 1.278A.25.25 0 0 1 8.799 4H7.201a.25.25 0 0 1-.212-.382zm0 11.32-.799-1.277A.25.25 0 0 1 7.201 12H8.8a.25.25 0 0 1 .212.383l-.799 1.278a.25.25 0 0 1-.424 0Zm-4.17-4.65-1.279-.798a.25.25 0 0 1 0-.424l1.279-.799A.25.25 0 0 1 4 7.201V8.8a.25.25 0 0 1-.382.212Zm10.043-.798-1.278.799A.25.25 0 0 1 12 8.799V7.2a.25.25 0 0 1 .383-.212l1.278.799a.25.25 0 0 1 0 .424Z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h6 class="text-muted font-semibold">Clients</h6>
+                                <h6 class="font-extrabold mb-0">{{client}}</h6>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body px-3 py-4-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stats-icon green">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-car-front" viewBox="0 0 16 16">
+                                        <path
+                                            d="M4 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0m10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM4.862 4.276 3.906 6.19a.51.51 0 0 0 .497.731c.91-.073 2.35-.17 3.597-.17s2.688.097 3.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 10.691 4H5.309a.5.5 0 0 0-.447.276" />
+                                        <path
+                                            d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM4.82 3a1.5 1.5 0 0 0-1.379.91l-.792 1.847a1.8 1.8 0 0 1-.853.904.8.8 0 0 0-.43.564L1.03 8.904a1.5 1.5 0 0 0-.03.294v.413c0 .796.62 1.448 1.408 1.484 1.555.07 3.786.155 5.592.155s4.037-.084 5.592-.155A1.48 1.48 0 0 0 15 9.611v-.413q0-.148-.03-.294l-.335-1.68a.8.8 0 0 0-.43-.563 1.8 1.8 0 0 1-.853-.904l-.792-1.848A1.5 1.5 0 0 0 11.18 3z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h6 class="text-muted font-semibold">Vehicles </h6>
+                                <h6 class="font-extrabold mb-0">{{vehicle}}</h6>
+
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Dashboard Profile</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="bar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+   
+    <div class="col-12 col-lg-3">
+        <div class="col-12 float-right">
+            <form id="yearForm" method="get" action="{% url 'admin:index' %}">
+                <label for="year">Select Year To filter data </label>
+                <select class="choices form-select" name="year" id="year">
+                    {% for year in years %}
+                    <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>
+                        {{ year }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+        <div class="card">
+            <div class="card-body px-3 py-4-5">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="stats-icon red">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-people-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h6 class="text-muted font-semibold">
+
+                            Owners
+                        </h6>
+                        <h6 class="font-extrabold mb-0">{{owner}}</h6>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4>% of Available Vehicle </h4>
+            </div>
+            <div class="card-body">
+                <div id="radialGradient"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Vehicle Booking</h4>
+                </div>
+                <div class="card-body">
+                    <div id="area">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- <script src="/static/vendors/apexcharts/apexcharts.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.2/dist/apexcharts.min.js"></script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.getElementById('year').addEventListener('change', function () {
+            var selectedYear = this.value;
+            var currentUrl = window.location.href;
+            var newUrl = currentUrl.split('?')[0] + '?year=' + selectedYear;
+            window.location.href = newUrl;
+        });
+
+        var vehicleCounts = JSON.parse('{{ vehicle_count|safe }}');
+        var bookingCounts = JSON.parse('{{ vehicle_booking_count|safe }}');
+        var ownerCounts = JSON.parse('{{ owner_count|safe }}');
+        var driverCounts = JSON.parse('{{ driver_count|safe }}');
+        var percentage = JSON.parse('{{ percentage|safe }}');
+
+        // Create an array of month names for the x-axis labels
+        var months = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+
+        var areaOptions = {
+            series: [
+                {
+                    name: "Vehicle Booking",
+                    data: bookingCounts,
+                },
+
+            ],
+            chart: {
+                height: 350,
+                type: "area",
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            stroke: {
+                curve: "smooth",
+            },
+            xaxis: {
+                type: "month",
+                categories: months
+            },
+            tooltip: {
+                x: {
+                    format: "dd/MM/yy HH:mm",
+                },
+            },
+        };
+        var radialGradientOptions = {
+            series: [percentage],
+            chart: {
+                height: 350,
+                type: "radialBar",
+                toolbar: {
+                    show: true,
+                },
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: -135,
+                    endAngle: 225,
+                    hollow: {
+                        margin: 0,
+                        size: "70%",
+                        background: "#fff",
+                        image: undefined,
+                        imageOffsetX: 0,
+                        imageOffsetY: 0,
+                        position: "front",
+                        dropShadow: {
+                            enabled: true,
+                            top: 3,
+                            left: 0,
+                            blur: 4,
+                            opacity: 0.24,
+                        },
+                    },
+                    track: {
+                        background: "#fff",
+                        strokeWidth: "67%",
+                        margin: 0, // margin is in pixels
+                        dropShadow: {
+                            enabled: true,
+                            top: -3,
+                            left: 0,
+                            blur: 4,
+                            opacity: 0.35,
+                        },
+                    },
+
+                    dataLabels: {
+                        show: true,
+                        name: {
+                            offsetY: -10,
+                            show: true,
+                            color: "#888",
+                            fontSize: "17px",
+                        },
+                        value: {
+                            formatter: function (val) {
+                                return parseInt(val);
+                            },
+                            color: "#111",
+                            fontSize: "36px",
+                            show: true,
+                        },
+                    },
+                },
+            },
+            fill: {
+                type: "gradient",
+                gradient: {
+                    shade: "dark",
+                    type: "horizontal",
+                    shadeIntensity: 0.5,
+                    gradientToColors: ["#ABE5A1"],
+                    inverseColors: true,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 100],
+                },
+            },
+            stroke: {
+                lineCap: "round",
+            },
+            labels: ["Percent"],
+        };
+        // Prepare the data for the chart
+        var chartOptions = {
+            series: [
+                {
+                    name: 'Vehicle',
+                    data: vehicleCounts,
+                },
+                {
+                    name: 'Owner',
+                    data: ownerCounts,
+                }, {
+                    name: 'Driver',
+                    data: driverCounts,
+                }
+            ],
+
+            chart: {
+                type: "bar",
+                height: 350,
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: "55%",
+                    endingShape: "rounded",
+                },
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ["transparent"],
+            },
+            xaxis: {
+                categories: months,
+            },
+            yaxis: {
+                title: {
+                    text: "Count",
+                },
+            },
+            fill: {
+                opacity: 1,
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return " " + val + " Registered";
+                    },
+                },
+            },
+
+        };
+        console.log(" Charts data ", chartOptions)
+        // Initialize the chart
+        var chart = new ApexCharts(document.querySelector("#bar"), chartOptions);
+        var radialGradient = new ApexCharts(document.querySelector("#radialGradient"), radialGradientOptions);
+        var area = new ApexCharts(document.querySelector("#area"), areaOptions);
+
+        area.render();
+
+        chart.render();
+        radialGradient.render()
+    });
+</script>
+{% endblock %}

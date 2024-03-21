@@ -1,0 +1,254 @@
+{%load crispy_forms_tags%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adinas Fleet Management System - Create  Account</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+    <link
+      rel="stylesheet"
+      href="/static/vendors/bootstrap-icons/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <link rel="stylesheet" href="/static/css/pages/auth.css" />
+    <style>
+      .form-control-icon {
+        left: 10px !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="auth">
+      <div class="row h-100">
+        <div class="col-lg-8 col-12">
+          <div id="auth-left">
+            <div class="auth-logo">
+              <a href="{%url 'admin:index'%}"
+                ><img src="/static/images/logo/logo.png" alt="Logo"
+              /></a>
+            </div>
+            <h1 class="auth-title">Sign Up</h1>
+            <p class="auth-subtitle mb-5">Input your data to register.</p>
+
+            <form id="signupForm" action="{%url 'signup' %}" method="POST">
+    {% csrf_token %}
+    {% load crispy_forms_tags %}                  
+<div class="row">
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.first_name}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-person"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span id="fname_error">{{form.first_name.errors}}</span>
+                  </div>
+                </div>
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.last_name}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-person"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span id="lname_error">{{form.last_name.errors}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 form-group position-relative mb-4">
+                  <div>
+                    {{form.email}}
+                    <!-- <div class="form-control-icon">
+                                        <i class="bi bi-envelope"></i>
+                                    </div> -->
+                    <div class="invalid-feedback">
+                      <i class="bx bx-radio-circle"></i>
+                      <span>{{form.email.errors}}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.username}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-person-check"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span>{{form.username.errors}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.phone_number}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-telephone"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span>{{form.phone_number.errors}}</span>
+                  </div>
+                </div>
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.gender}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-people"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span>{{form.gender.errors}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.country}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span>{{form.country.errors}}</span>
+                  </div>
+                </div>
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.city}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span id="city_error">{{form.city.errors}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.street_address}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-compass"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span id="sad_error">{{form.street_address.errors}}</span>
+                  </div>
+                </div>
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.home_address}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-compass"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span id="had_error">{{form.home_address.errors}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.password1}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-shield-lock"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span>{{form.password1.errors}}</span>
+                  </div>
+                </div>
+                <div class="col-md-6 form-group position-relative mb-4">
+                  {{form.password2}}
+                  <!-- <div class="form-control-icon">
+                                    <i class="bi bi-shield-lock"></i>
+                                </div> -->
+                  <div class="invalid-feedback">
+                    <i class="bx bx-radio-circle"></i>
+                    <span>{{form.password2.errors}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                id="submitButton"
+                class="btn btn-primary btn-block btn-lg shadow-lg mt-5"
+              >
+                Sign Up
+              </button>
+            </form>
+            <div class="text-center mt-5 text-lg fs-4">
+              <p class="text-gray-600">
+                Already have an account?
+                <a href="{%url 'admin:login'%}" class="font-bold">Log in</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 d-none d-lg-block">
+          <div id="auth-right"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/vendors/jquery/jquery.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#submitButton").click(function () {
+          if (
+            validate("id_first_name") &&
+            validate("id_last_name") &&
+            validate("id_city") &&
+            validate("id_street_address") &&
+            validate("id_home_address")
+          ) {
+            $("#signupForm").submit();
+          } else {
+            $(".invalid-feedback").css("display", "block");
+            if (!validate("id_first_name")) {
+              $("#fname_error").html("Please Enter A valid First Name");
+            }
+            if (!validate("id_last_name")) {
+              $("#lname_error").html("Please Enter A valid Last Name");
+            }
+            if (!validate("id_city")) {
+              $("#city_error").html("Please Enter A valid City Name");
+            }
+            if (!validate("id_street_address")) {
+              $("#sad_error").html("Please Enter A valid Street Address");
+            }
+            if (!validate("id_home_address")) {
+              $("#had_error").html("Please Enter A valid Home Address");
+            }
+          }
+        });
+      });
+      function validate(id) {
+        const re =
+          /(\b)(on\S+)(\s*)=|javascript|<(|\/|[^\/>][^>]+|\/[^>][^>]+)>/;
+        var name = $("#" + id).val();
+        return !re.test(name);
+      }
+
+      function validateAgain(inputId, errorId) {
+        const re =
+          /(\b)(on\S+)(\s*)=|javascript|<(|\/|[^\/>][^>]+|\/[^>][^>]+)>/;
+        var name = $("#" + inputId).val();
+        if (!re.test(name)) {
+          $("#" + errorId).empty();
+        } else {
+          $(".invalid-feedback").css("display", "block");
+          $("#" + errorId).empty();
+          $("#" + errorId).html("Please Enter a Valid Value");
+        }
+      }
+    </script>
+  </body>
+</html>

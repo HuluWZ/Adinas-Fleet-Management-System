@@ -1,0 +1,161 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{% block extrahead %}
+<script src="/static/vendors/jquery/jquery.min.js"></script>
+{% endblock %}
+
+{%block extrastyle%}
+<style>
+    select{
+        min-height: 380px;
+    }
+    .asignbtn{
+        margin-top: 200px;
+    }
+</style>
+{%endblock%}
+{%block users%}active{%endblock%}
+{%block users_submenu%}active{%endblock%}
+{%block page_title%}
+  <h3>{{subtitle}}</h3>
+  {%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:group_list'%}">Privilages Group List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:create_group'%}">Groups Form</a></li>
+{%endblock%} 
+{%block content%}
+<div class="row mt">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="mb-2">
+            <input type="text" class="form-control" placeholder="Group Name" name="group_name" id="group_name">
+          </div>
+          <div class="row">
+            <div class="col-md-5 col-sm-5 col-lg-5">
+              <h5>{% translate 'Available Permisions'%}</h5>
+              <select name="available" id="roleAvl" class="form-control" multiple>
+                {%for permision in permisions%}
+                <option value="{{permision.id}}">{{permision.name}}</option>
+                {%endfor%}
+            </select>
+            </div>
+            <div class="col-md-2 col-sm-2 col-lg-2 text-center">
+              <div class='asignbtn' >
+                <button type="button" class="btn icon btn-success" title="{%translate 'Assign Role'%}" onclick="roleAvailableToAssign()">
+                  <i class="bi bi-person-plus-fill"></i>
+                </button><br><br>
+                <button type="button" class="btn icon btn-danger" title="{%translate 'Revoke Role'%}" onclick="roleAssignToAvailable()">
+                  <i class="bi bi-person-dash-fill"></i>
+                </button>
+            </div> 
+            </div>
+            <div class="col-md-5 col-sm-5 col-lg-5">
+              <h5>{% translate 'Assigned Permisions'%}</h5>
+              <select name="assigned" id="roleAssign" multiple class="form-control">
+                        
+            </select>
+            </div>
+          </div>
+          <hr>
+          <div class="form-group">
+          {% if perms.auth.change_group%}
+            <button onclick="saveAssignedRole()" type="submit" class="btn btn-primary" type="submit">{% translate 'Save Chnages'%}</button>
+          {%endif%}
+            <a href="{%url 'admin:group_list' %}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{%endblock%}
+{%block scripts%}
+<script>
+    var my_token = "{{csrf_token}}";
+    
+    function saveAssignedRole() {
+	
+	var r = confirm("Arey you sure to save changes ?");
+		if (r == true) {
+
+			// $("#saveuserdetail").prop("disabled", true);
+
+            var selected_permissions_list = []
+            var group_name = "";   
+            if($("#group_name").val() == "") {alert("Group Name is Required");}else{
+							group_name = $("#group_name").val();
+                        
+                    $("#roleAssign option").each(function() {
+					    selected_permissions_list.push($(this).val());
+					});
+                    $.ajax({
+							url:"{%url 'admin:create_group'%}",
+							type : "POST",
+							headers: { "X-CSRFToken": my_token },
+							data : {
+								'group_name':group_name,
+								'sel_perm_list':selected_permissions_list
+							},
+							success:function(result){
+							    alert(result['message']);
+                                window.open("/admin/group_list/",'_self');
+							},
+						});
+
+            }
+            
+            
+
+		} else {
+
+		}
+
+	}
+    function roleAvailableToAssign() {
+
+        //  $("#saveuserdetail").prop("disabled",false);
+		
+		if ($("#roleAvl").val() != null) {
+				
+				//for multiple selection.....................
+				
+				var role_id_str=""+$("#roleAvl").val();
+				var role_id_arr=role_id_str.split(',');
+				for(n=0;n<role_id_arr.length;n++)
+					{
+					
+					$("#roleAssign").append('<option title="'+$('#roleAvl option[value='+role_id_arr[n]+']').attr('title')+'" value='+role_id_arr[n]+'>'+$('#roleAvl option[value='+role_id_arr[n]+']').attr('selected', 'selected').text()+'</option>');
+					
+					}
+				
+				
+				$('#roleAvl :selected').remove();
+			}else{
+				return false;
+			}	
+		}
+
+	function roleAssignToAvailable(){	
+	
+	// $("#saveuserdetail").prop("disabled",false);	
+		
+	if($("#roleAssign").val() !=null){
+				
+				var role_code_str=""+$("#roleAssign").val();
+				var role_code_arr=role_code_str.split(',');
+				for(n=0;n<role_code_arr.length;n++)
+					{
+						$("#roleAvl").append('<option title="'+$('#roleAssign option[value='+role_code_arr[n]+']').attr('title')+'" value='+role_code_arr[n]+'>'+$('#roleAssign option[value='+role_code_arr[n]+']').attr('selected', 'selected').text()+'</option>');
+					}
+				
+				$('#roleAssign :selected').remove();		//For Remove */
+
+	}else{
+		return false;
+	}
+
+	}
+</script>
+{%endblock%}
+ 

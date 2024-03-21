@@ -1,0 +1,269 @@
+{% extends 'website/base.html' %}
+{% block content%}
+{%load crispy_forms_tags%}
+
+
+    <!-- Carousel Start -->
+    <div class="container-fluid p-0 pb-5">
+        <div class="owl-carousel header-carousel position-relative mb-5">
+            {% for slider in sliders%}
+            <div class="owl-carousel-item position-relative">
+                <img class="img-fluid" src="{{ slider.image.url }}" style="height: 1024px; width: 1920px;" alt="">
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(6, 3, 21, .5);">
+                    <div class="container">
+                        <div class="row justify-content-start">
+                            <div class="col-10 col-lg-8">
+                                <h5 class="text-white text-uppercase mb-3 animated slideInDown">Transport & Car Rental Solution</h5>
+                                <h1 class="display-3 text-white animated slideInDown mb-4">{{slider.title}} </h1>
+                                <!-- <p class="fs-5 fw-medium text-white mb-4 pb-2">Vero elitr justo clita lorem. Ipsum dolor at sed stet sit diam no. Kasd rebum ipsum et diam justo clita et kasd rebum sea elitr.</p> -->
+                                <!-- <a href="" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Read More</a>
+                                <a href="" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Free Quote</a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %} 
+        </div>
+    </div>
+    <!-- Carousel End -->
+
+    {% if about is not None%}
+    <!-- About Start -->
+    <div id="about" class="container-fluid overflow-hidden py-5 px-lg-0">
+        <div class="container about py-5 px-lg-0">
+            <div class="row g-5 mx-lg-0">
+                <div class="col-lg-6 ps-lg-0 wow fadeInLeft" data-wow-delay="0.1s" style="min-height: 400px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute img-fluid w-100 h-100" src="{{ about.image.url }}" style="object-fit: cover;" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 about-text wow fadeInUp" data-wow-delay="0.3s">
+                    <h6 class="text-secondary text-uppercase mb-3">About Us</h6>
+                    <h1 class="mb-5">Adinas Transport and Car Rental</h1>
+                    <p class="mb-5">
+                        {{ about.description }}
+                    </p>
+                    <!-- <div class="row g-4 mb-5">
+                        <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
+                            <i class="fa fa-globe fa-3x text-primary mb-3"></i>
+                            <h5>Rent Anywhere in Ethiopia</h5>
+                            <p class="m-0">Stet stet justo dolor sed duo. Ut clita sea sit ipsum diam lorem diam justo.</p>
+                        </div>
+                        <div class="col-sm-6 wow fadeIn" data-wow-delay="0.7s">
+                            <i class="fa fa-reply fa-3x text-primary mb-3"></i>
+                            <h5>Robust Response</h5>
+                            <p class="m-0">Stet stet justo dolor sed duo. Ut clita sea sit ipsum diam lorem diam justo.</p>
+                        </div>
+                    </div> -->
+                    <!-- <a href="" class="btn btn-primary py-3 px-5">Explore More</a> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+    {%endif%}
+
+    <!-- Fact Start -->
+    <div id="facts" class="container-xxl py-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase mb-3">Some Facts</h6>
+                    <h1 class="mb-5">#1 Place To Manage All Of Your Rental Needs</h1>
+                    <p class="mb-5">Join us on the road to adventure. Wherever you're headed, we've got the keys to get you there. 
+                        Welcome to Adinas—Your Journey, Your Way.</p>
+                    <div class="d-flex align-items-center">
+                        <i class="fa fa-headphones fa-2x flex-shrink-0 bg-primary p-3 text-white"></i>
+                        <div class="ps-4">
+                            <h6>Call for any query!</h6>
+                            <h3 class="text-primary m-0"><a href="tel:+251 91 151 0313">+251 91 151 0313</a></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-sm-6">
+                            <div class="bg-primary p-4 mb-4 wow fadeIn" data-wow-delay="0.3s">
+                                <i class="fa fa-users fa-2x text-white mb-3"></i>
+                                <h2 class="text-white mb-2" data-toggle="counter-up">{{facts.clients}}</h2>
+                                <p class="text-white mb-0">Happy Clients</p>
+                            </div>
+                            <div class="bg-info p-4 wow fadeIn" data-wow-delay="0.5s">
+                                <i class="fa fa-car fa-2x text-white mb-3"></i>
+                                <h2 class="text-white mb-2" data-toggle="counter-up">{{facts.fleets}}</h2>
+                                <p class="text-white mb-0">Available Fleets</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bg-success p-4 wow fadeIn" data-wow-delay="0.7s">
+                                <i class="fa fa-route fa-2x text-white mb-3" ></i>
+                                <h2 class="text-white mb-2" data-toggle="counter-up">{{facts.rentals}}</h2>
+                                <p class="text-white mb-0">Vehicle Rentals</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fact End -->
+
+
+    <!-- Service Start -->
+    <div id="service" class="container-xxl py-5">
+        <div class="container py-5">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-secondary text-uppercase">Our Services</h6>
+                <h1 class="mb-5">Explore Our Services</h1>
+            </div>
+            <div class="row g-4">
+                {% for service in services %}
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item p-4">
+                        <div class="overflow-hidden mb-4">
+                            <img class="img-fluid" src="{{ service.image.url }}" alt="">
+                        </div>
+                        <h4 class="mb-3">{{ service.title }}</h4>
+                        <p>{{ service.description }}</p>
+                        <!-- <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span>Read More</span></a> -->
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+
+
+    <!-- Feature Start -->
+    <div id="feature" class="container-fluid overflow-hidden py-5 px-lg-0">
+        <div class="container feature py-5 px-lg-0">
+            <div class="row g-5 mx-lg-0">
+                <div class="col-lg-6 feature-text wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase mb-3">Our Features</h6>
+                    <h1 class="mb-5">We Are Trusted Car Rental Company Since 1990</h1>
+                    <div class="d-flex mb-5 wow fadeInUp" data-wow-delay="0.3s">
+                        <i class="fa fa-globe text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>Rent Anywhere in Ethiopia</h5>
+                            <p class="mb-0">We have fleets all over ethiopia, you can rent from your prefered location.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-5 wow fadeIn" data-wow-delay="0.5s">
+                        <i class="fa fa-reply text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>On Time Response</h5>
+                            <p class="mb-0">Adinas is know by its clients to have a responsive team.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-0 wow fadeInUp" data-wow-delay="0.7s">
+                        <i class="fa fa-headphones text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>24/7 Support</h5>
+                            <p class="mb-0">Contact us anytime, we would be happy to assist you on your travel needs anytime.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s" style="min-height: 400px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute img-fluid w-100 h-100" src="/static/website/img/feature.jpg" style="object-fit: cover;" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Feature End -->
+
+    <!-- Quote Start -->
+    <div id="contact" class="container-xxl py-5">
+        <div class="container py-5">
+             
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase mb-3">Contact us</h6>
+                    <h1 class="mb-5">Feel free to get in touch with us</h1>
+                    <p class="mb-5">We value your inquiries and are here to assist you. 
+                        Please feel free to reach out to us with any questions, concerns, or special requests. 
+                        Our dedicated team is ready to provide you with the support you need.</p>
+                    <div class="d-flex align-items-center">
+                        <i class="fa fa-headphones fa-2x flex-shrink-0 bg-primary p-3 text-white"></i>
+                        <div class="ps-4">
+                            <h6>Call us for any query!</h6>
+                            <h3 class="text-primary m-0">+251 91 151 0313</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="bg-light  text-center p-5 wow fadeIn" data-wow-delay="0.5s">
+                        <form role="form" action="{%url 'contact_us' %}" method="POST" class="form-horizontal" style-form>
+                                {%csrf_token%}
+                                    <!-- {{form|crispy}} -->
+                                <div class="form-group  row">
+                                       <div class="col-md-12">
+                                                {{form.name}}
+                                                <p class="alert-warning">{{form.name.errors}}</p>
+                                        </div>
+                                </div>
+                                <div class="form-group row">
+                                        <div class="col-md-6">
+                                                {{form.email}}
+                                            <p class="alert-warning">{{form.email.errors}}</p>
+                                        </div>
+                                       <div class="col-md-6">
+                                            {{form.phone_number}}
+                                           <p class="alert-warning">{{form.phone_number.errors}}</p>
+                                        </div>
+
+                                </div> 
+                                <div class="form-group row">
+                                        <div class="col-md-12">
+                                            {{form.note}}
+                                          <p class="alert-warning">{{form.note.errors}}</p>
+                                        </div>
+                                </div>
+                                <div class="form-group-row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-primary w-100 py-3" type="submit">Submit</button>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Quote End -->
+    <div id="contact-map" class="container-fluid">
+        <div class="py-5">
+            <div id="map" style="height: 300px; width: 100%;"></div> 
+        </div>
+    </div>
+    {% if testimonials.exists %}
+    <!-- Testimonial Start -->
+    <div id="testimonial" class="container-xxl py-2 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="text-center">
+                <h6 class="text-secondary text-uppercase">Testimonial</h6>
+                <h1 class="mb-0">What our clients say about us!</h1>
+            </div>
+            <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
+                {% for testimonial in testimonials %}
+                <div class="testimonial-item p-4 my-5">
+                    <i class="fa fa-quote-right fa-3x text-light position-absolute top-0 end-0 mt-n3 me-4"></i>
+                    <div class="d-flex align-items-end mb-4">
+                        <img class="img-fluid flex-shrink-0" src="/static/website/img/favicon.png" style="width: 80px; height: 80px;">
+                        <div class="ms-4">
+                            <h5 class="mb-1">{{ testimonial.full_name }}</h5>
+                            <p class="m-0">{{testimonial.company_name}}</p>
+                        </div>
+                    </div>
+                    <p class="mb-0">{{ testimonial.testimonal }}</p>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial End -->
+    {%endif%}
+{% endblock %}

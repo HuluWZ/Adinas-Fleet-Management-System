@@ -1,0 +1,291 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<style>
+  .errorlist {
+    color: red;
+  }
+
+  /* Style for the image container */
+  .image-link {
+    display: inline-block;
+  }
+
+  /* Style for circular or square shape */
+  .rounded-image {
+    width: 200px;
+    /* Adjust size as needed */
+    height: 200px;
+    /* Adjust size as needed */
+    overflow: hidden;
+    border: 2px solid #ccc;
+    /* Optional: Add border */
+  }
+
+  /* Style for the image */
+  .rounded-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Maintain aspect ratio */
+  }
+
+  /* Optional hover effect */
+  .rounded-image:hover {
+    border-color: #000;
+    /* Change border color on hover */
+  }
+
+  .viewImage {
+    font-size: 0.75rem;
+    /* Adjust the font size to make it smaller */
+    padding: 0.28rem 0.24rem;
+    /* Adjust the padding to reduce the overall size */
+
+  }
+</style>
+{%endblock%}
+{%block drivers%}active{%endblock%}
+{%block drivers_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:get_all_vehicles'%}">Vehicle List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a
+    href="{%url 'admin:get_one_vehicle' vehicle_id=object.id%}">Vehicle Detail</a></li>
+{%endblock%}
+
+{%block content%}
+<div class="card">
+  <h4 class="card-header">{% translate 'Vehicle Information'%}</h4>
+  <div class="card-body">
+
+    <form role="form" action="{%url 'admin:update_vehicle' vehicle_id=object.id%}" method="POST"
+      enctype="multipart/form-data" class="form-horizontal  style-form">
+      {%csrf_token%}
+
+      <!-- {{form|crispy}} -->
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.account.label}}</label>
+          {{form.account}}
+          <p class="alert-warning">{{form.account.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.address.label}}</label>
+          {{form.address}}
+          <p class="alert-warning">{{form.address.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.plate_number.label}}</label>
+          {{form.plate_number}}
+          <p class="alert-warning">{{form.plate_number.errors}}</p>
+        </div>
+      </div>
+
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.vehicle_type.label}}</label>
+          {{form.vehicle_type}}
+          <p class="alert-warning">{{form.vehicle_type.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.model.label}}</label>
+          {{form.model}}
+          <p class="alert-warning">{{form.model.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.brand.label}}</label>
+          {{form.brand}}
+          <p class="alert-warning">{{form.brand.errors}}</p>
+        </div>
+      </div>
+
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.license.label}}</label>
+          <div class="input-group">
+            {{form.license}}
+            <p class="alert-warning">{{form.license.errors}}</p>
+            {%if object.license%}
+            <a href="{{ object.license.url }}" target="_blank" class="btn btn-primary" role="button">
+              View
+            </a>
+            {%endif%}
+          </div>
+          {{form.license.help_text}}
+        </div>
+        <div class="col-md-4">
+          <label>{{form.transmission.label}}</label>
+          {{form.transmission}}
+          <p class="alert-warning">{{form.transmission.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.production_year.label}}</label>
+          {{form.production_year}}
+          <p class="alert-warning">{{form.production_year.errors}}</p>
+        </div>
+      </div>
+
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.libre.label}}</label>
+          <div class="input-group">
+            {{form.libre}}
+            <p class="alert-warning">{{form.libre.errors}}</p>
+            {%if object.libre%}
+            <a href="{{ object.libre.url }}" target="_blank" class="btn btn-primary" role="button">
+              View
+            </a>
+            {%endif%}
+          </div>
+          {{form.libre.help_text}}
+        </div>
+        <div class="col-md-4">
+          <label>{{form.driver_status.label}}</label>
+          {{form.driver_status}}
+          <p class="alert-warning">{{form.driver_status.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.color.label}}</label>
+          {{form.color}}
+          <p class="alert-warning">{{form.color.errors}}</p>
+        </div>
+
+      </div>
+
+
+                  
+
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label>{{form.fuel_type.label}}</label>
+          {{form.fuel_type}}
+          <p class="alert-warning">{{form.fuel_type.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          <label>{{form.price_per_day.label}}</label>
+          {{form.price_per_day}}
+          <p class="alert-warning">{{form.price_per_day.errors}}</p>
+        </div>
+        <div class="col-md-4">
+          &nbsp;
+          <div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" type="button">
+                  View and Upload Vehicle
+            </button>
+          </div>
+          </div>
+
+        </div>
+                  <div class="form-group row">
+                    <div class="col-md-4">
+                      <label>{{form.area_of_interests.label}}</label>
+                      {{form.area_of_interests}}
+                      <p class="alert-warning">{{form.area_of_interests.errors}}</p>
+                    </div>
+                  </div>
+
+
+
+
+      <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+          <button type="submit" name="submit_form1" class="btn btn-primary">{% translate 'Save Changes'%}</button>
+          <a href="{%url 'admin:get_all_vehicles' %}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+        </div>
+      </div>
+    </form>
+</div>
+</div>
+  <!-- Image Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Vehicle Images</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <i data-feather="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- Display Images Section -->
+          <div class="col-md-6">
+            <div class="row">
+              {% for imagePath in images %}
+              <div class="col-md-6 mb-3">
+                <div class="card">
+                  <a href="{{ imagePath.image.url }}" target="_blank">
+                    <img src="{{ imagePath.image.url }}" class="card-img-top square-image" alt="Image">
+                  </a>
+                  <div class="card-body">
+                    <a href="{% url 'admin:remove_vehicle_image' image_id=imagePath.id %}" class="text-danger">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <!-- Upload Form Section -->
+          <div class="col-md-6">
+            <div class="card">
+              <form role="form" method="POST" enctype="multipart/form-data"
+                action="{% url 'admin:update_vehicle' vehicle_id=object.id %}" class="form-horizontal style-form">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="{{ form2.image.id_for_label }}">{{ form2.image.label }}</label>
+                  {{ form2.image }}
+                  {{ form2.image.help_text }}
+                  <p class="alert-warning">{{ form2.image.errors }}</p>
+                </div>
+                <button type="submit" name="submit_form2" class="btn btn-success">Upload</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{%endblock%}
+
+{%block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const viewImagesBtn = document.getElementById("viewImagesBtn");
+    const imageModal = document.getElementById("imageModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+
+
+    viewImagesBtn.addEventListener("click", function () {
+      console.log(" Clieck ")
+      $('#imageModal').modal('show'); // Show the modal
+    });
+
+    closeModalBtn.addEventListener("click", function () {
+      $('#imageModal').modal('hide'); // Hide the modal
+    });
+  });
+</script>
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+
+{%endblock%}

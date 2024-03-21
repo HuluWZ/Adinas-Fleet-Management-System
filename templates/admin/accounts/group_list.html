@@ -1,0 +1,118 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%} 
+{%block extrastyle%}
+<style>
+    select{
+        min-height: 380px;
+    }
+    .asignbtn{
+        margin-top: 200px;
+    }
+    .left-panel{
+      min-height: 550px;
+      overflow-y: scroll;
+    }
+    .right-panel{
+      min-height: 600px;
+    }
+</style>
+{%endblock%}
+{%block users%}active{%endblock%}
+{%block users_submenu%}active{%endblock%}
+{%block page_title%}
+  <h3>{{subtitle}}</h3>
+  {%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:group_list'%}">Privilages Group List</a></li>
+{%endblock%}
+
+{%block content%} 
+<div class="breadcrumb pull-right">
+    {% if perms.auth.add_group%}
+    <a href="{%url 'admin:create_group'%}" class="btn btn-outline-success pr-2 pull-right">
+      <i class="fa fa-plus"></i>  {%translate 'Add New Group'%}
+      </a>
+    {%endif%}
+    {%if perms.auth.delete_group%}
+      {%if current_group%}
+        &nbsp;<a href="{%url 'admin:delete_group' pk=current_group.id%}" class="btn btn-outline-danger">{%translate 'Delete This Group'%}</a>
+      {%endif%}
+    {%endif%}
+</div>
+<div class="row mt">
+  <div class="col-sm-3">
+    <section class="card left-panel">
+      <div class="card-body">
+        <ul class="list-group">
+          {%for group in groups%}
+          <li id="group{{group.id}}"
+              class="list-group-item d-flex justify-content-between align-items-center {%if group.id == current_group.id%}active text-white{%endif%}">
+              <a href="{%url 'admin:update_group' pk=group.id%}"><span class="text text-dark"> {{group.name}}</span></a>
+              <span class="badge bg-warning badge-pill badge-round ml-1">{{group.permissions.count}}</span>
+          </li>
+          {%endfor%}
+      </ul>
+         
+      </div>
+    </section>
+  </div>
+  <div class="col-sm-9 col-md-9 col-lg-9">
+    {%block groupdetail%}
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-2">
+          <input type="text" class="form-control" placeholder="Group Name" value="{{current_group.name}}" name="group_name" id="group_name">
+        </div>
+        <div class="row">
+          <div class="col-md-5 col-sm-5 col-lg-5">
+            <h5>{% translate 'Available Permisions'%}</h5>
+                    <select name="available" id="roleAvl" class="form-control" multiple>
+                        {%for permision in existing_permissions%}
+                        <option value="{{permision.id}}">{{permision.name}}</option>
+                        {%endfor%}
+                    </select>
+          </div>
+          <div class="col-md-2 col-sm-2 col-lg-2 text-center">
+            <div class='asignbtn' >
+              <button type="button" class="btn icon btn-success" title="{%translate 'Assign Role'%}" onclick="roleAvailableToAssign()">
+                <i class="bi bi-person-plus-fill"></i>
+              </button><br><br>
+              <button type="button" class="btn icon btn-danger" title="{%translate 'Revoke Role'%}" onclick="roleAssignToAvailable()">
+                <i class="bi bi-person-dash-fill"></i>
+              </button>
+      </div> 
+          </div>
+          <div class="col-md-5 col-sm-5 col-lg-5">
+            <h5>{% translate 'Assigned Permisions'%}</h5>
+                    <select name="assigned" id="roleAssign" multiple class="form-control">
+                        {%for permision in current_group.permissions.all%}
+                        <option value="{{permision.id}}">{{permision.name}}</option>
+                        {%endfor%}
+                    </select>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+        {% if perms.auth.change_group%}
+          <button onclick="saveAssignedRole()" type="submit" class="btn btn-primary" type="submit">{% translate 'Save Chnages'%}</button>
+        {%endif%}
+          <a href="{%url 'admin:index' %}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+        </div>
+      </div>
+    </div>
+    {%endblock%}
+  </div>
+</div>
+{%endblock%}
+{%block scripts%}
+<script>
+     function roleAvailableToAssign() {
+       alert("Please Click The Add New button to create new Previlage groups.");
+     }
+     function roleAssignToAvailable() {
+       alert("Please Click The Add New button to create new Previlage groups.");
+     }
+</script>
+{%endblock%}
+ 

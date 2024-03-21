@@ -1,0 +1,109 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+
+<style>
+  .errorlist {
+    color: red;
+  }
+</style>
+{%endblock%}
+
+{%block drivers%}active{%endblock%}
+{%block drivers_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:get_all_owners'%}">Owner List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:create_owner'%}">Owner Form</a></li>
+{%endblock%}
+{%block content%}
+<div class="card">
+  <h4 class="card-header">Register Owner Information</h4>
+  <div class="card-body">
+
+    <form role="form" action="{%url 'admin:create_owner'%}" method="POST" enctype="multipart/form-data"
+      class="form-horizontal  style-form">
+      {%csrf_token%}
+      <!-- {{form|crispy}} -->
+
+<!-- second row -->
+<div class="form-group row">
+  <div class="col-md-4">
+    <label>{{form.username.label}}</label>
+    {{form.username}}
+    <p class="alert-warning">{{form.username.errors}}</p>
+  </div>
+  <div class="col-md-4">
+    <label>{{form.first_name.label}}</label>
+    {{form.first_name}}
+    <p class="alert-warning">{{form.first_name.errors}}</p>
+  </div>
+  <div class="col-md-4">
+    <label>{{form.last_name.label}}</label>
+    {{form.last_name}}
+    <p class="alert-warning">{{form.last_name.errors}}</p>
+  </div>
+</div>
+
+<!-- second row -->
+<div class="form-group row">
+  <div class="col-md-4">
+    <label>{{form.email.label}}</label>
+    {{form.email}}
+    <p class="alert-warning">{{form.email.errors}}</p>
+  </div>
+
+  <div class="col-md-4">
+    <label>{{form.phone_number.label}}</label>
+    {{form.phone_number}}
+    <p class="alert-warning">{{form.phone_number.errors}}</p>
+  </div>
+
+  <div class="col-md-4">
+    <label>{{form.gender.label}}</label>
+    {{form.gender}}
+    <p class="alert-warning">{{form.gender.errors}}</p>
+  </div>
+</div>
+
+<!-- third row -->
+<div class="form-group row">
+  <div class="col-md-4">
+    <label>{{form.profile_image.label}}</label>
+    {{form.profile_image}} &nbsp; &nbsp;{{form.profile_image.help_text}}
+    <p class="alert-warning">{{form.profile_image.errors}}</p>
+  </div>
+  <div class="col-md-4">
+    <label>{{form.address.label}}</label>
+    {{form.address}}
+    <p class="alert-warning">{{form.address.errors}}</p>
+  </div>
+  <div class="col-md-4">
+      <label>{{form.role.label}}</label>
+        {{form.role}}
+      <p class="alert-warning">{{form.role.errors}}</p>
+  </div>
+
+</div>
+
+
+    <!-- fourth row -->
+      <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+          <button type="submit" class="btn btn-primary" type="submit">{% translate 'Save'%}</button>
+          <a href="{%url 'admin:get_all_owners'%}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+{%endblock%}
+{%block scripts%}
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+{%endblock%}

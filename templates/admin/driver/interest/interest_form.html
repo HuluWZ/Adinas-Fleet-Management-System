@@ -1,0 +1,56 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+
+<style>
+  .errorlist {
+    color: red;
+  }
+</style>
+{%endblock%}
+
+{%block settings%}active{%endblock%}
+{%block settings_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item" aria-current="page"><a href="{%url 'admin:get_all_interest'%}">Area Of Interest List</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:create_interest'%}">Area Of Interest Form</a></li>
+{%endblock%}
+{%block content%}
+<div class="card">
+  <h4 class="card-header">Register Area Of Interest Information</h4>
+  <div class="card-body">
+
+    <form role="form" action="{%url 'admin:create_interest'%}" method="POST" enctype="multipart/form-data"
+      class="form-horizontal  style-form">
+      {%csrf_token%}
+      <!-- {{form|crispy}} -->
+      <div class="form-group row">
+        <div class="col-md-8">
+          <label>{{form.name.label}}</label>
+          {{form.name}}
+          <p class="alert-warning">{{form.name.errors}}</p>
+        </div>
+        
+      </div>      
+      <!-- fifth row -->
+
+      <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+          <button type="submit" class="btn btn-primary" type="submit">{% translate 'Save'%}</button>
+          <a href="{%url 'admin:get_all_interest'%}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+{%endblock%}
+{%block scripts%}
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+{%endblock%}

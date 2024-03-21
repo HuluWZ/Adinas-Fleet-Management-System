@@ -1,0 +1,379 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n static %}
+{% load auth_template_tags %}
+
+{%block extrastyle%}
+<!-- <link rel="stylesheet" href="/static/vendors/apexcharts/apexcharts.min.css"> -->
+
+<style>
+  .content-panel {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 600px;
+  }
+</style>
+
+{%endblock%}
+{%block report%}active{%endblock%}
+{%block report_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:get_all_vehicles'%}">Vehicle List</a></li>
+{%endblock%}
+{%block content%}
+
+<div class="card">
+  <div class="card-header">
+    <form id="yearForm" method="get" action="{% url 'admin:get_all_filter_vehicle' %}">
+      <div class="form-group row">
+        <div class="col-md-3">
+          <label for="year">Select Vehicle Type </label>
+          <select class="choices form-select" name="year" id="year">
+            <option value="" {% if not selected_type %}selected{% endif %}>Select Vehicle Type</option>
+            {% for year in vehicle_type %}
+            <option value="{{ year.id }}" {% if selected_type == year.id %} selected {% endif %}>
+              {{ year }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="registered_by">Registered By</label>
+          <select class="choices form-select" name="registered_by" id="registered_by">
+            <option value="" {% if not selected_user_type %}selected{% endif %}>All</option>
+            <option value="admin" {% if selected_user_type == 'admin' %}selected{% endif %}>Admin</option>
+            <option value="driver" {% if selected_user_type == 'driver' %}selected{% endif %}>Driver</option>
+            <option value="owner" {% if selected_user_type == 'owner' %}selected{% endif %}>Owner</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="start_date">Select Start Date</label>
+          <input type="date" id="start_date" name="start_date" class="form-control" value="{{ start_date }}">
+        </div>
+        <div class="col-md-2">
+          <label for="end_date">Select End Date</label>
+          <input type="date" id="end_date" name="end_date" class="form-control" value="{{ end_date }}">
+        </div>
+        <div class="col-md-2"><br>
+          <div class="col-md-12 offset-4">
+            <button id="clearFilters" class="btn btn-xs btn-danger rounded-pill">Clear Filters</button>
+          </div>
+        </div>
+      </div>
+      <hr>
+    </form>
+
+  </div>
+  <div class="card-body">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home"
+          aria-selected="true">Tabular Report</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+          aria-selected="false">Graph Report</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="card-body">
+          <table class="table table-striped" id="hidden-table-info">
+            <thead>
+              <tr>
+                <th>{%translate 'No'%}</th>
+                <th>{%translate 'Plate Number'%}</th>
+                <th>{%translate 'Vehicle Type'%}</th>
+                <th>{%translate 'Color'%}</th>
+                <th>{%translate 'Make'%}</th>
+                <th>{%translate 'Model'%}</th>
+                <th class="hidden-phone">{%translate 'Production Year'%}</th>
+                <th>{%translate 'Action'%}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%for object in vehicle_data%}
+              <tr class="gradeA">
+                <td>{{forloop.counter}}</td>
+                <td>{{object.plate_number}}</td>
+                <td>{{object.vehicle_type}}</td>
+                <td>{{object.color}}</td>
+                <td>{{object.brand}}</td>
+                <td>{{object.model}}</td>
+                <td class="center hidden-phone">{{object.production_year}}</td>
+                <td>
+                  {% if perms.accounts.change_userprofile%}
+                  {% if object.is_available %}
+                  <a href="{%url 'admin:activate_deactivate_vehicle' vehicle_id=object.id%}"
+                    data-driver-id="{{ object.id }}" title="Activate Deactivate Vehicle"
+                    class="activate-driver btn btn-danger btn-sm">
+                    <i class="bi bi-x-circle"></i>
+                  </a>
+                  {% else %}
+                  <a href="{%url 'admin:activate_deactivate_vehicle' vehicle_id=object.id%}"
+                    data-driver-id="{{ object.id }}" title="Activate Deactivate Vehicle"
+                    class="activate-driver btn btn-success btn-sm">
+                    <i class="bi bi-check-circle"></i>
+                  </a>
+                  {% endif %}
+
+                  <a href="{%url 'admin:update_vehicle' vehicle_id=object.id%}" title="Update/View Vehicle Information"
+                    class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                  </a>
+                  {%endif%}
+
+                  {% if perms.accounts.delete_user_profile%}
+                  <a href="{% url 'admin:recycle_vehicle' vehicle_id=object.id %}" title="Delete vehicle"
+                    onclick="return confirm('Are You Sure You Want To Delete this Vehicle?');"
+                    class="btn btn-danger btn-sm">
+                    <i class="bi bi-archive"></i>
+                  </a>
+                  {%endif%}
+                </td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <!-- <h4>Registered By</h4> -->
+        <div class="card-body">
+          <div class="form-group row">
+            <div class="col-md-12">
+              <div class="card-header">
+                <h5> Vehicle Type</h5>
+                <div class="hidden" id="hidden_data_type" data-value="{{ type_data|safe }}"
+                  data-another-value="{{type_label|safe}}">
+                </div>
+
+              </div>
+              <div class="card-body" id="vehicle_type">
+
+              </div>
+            </div>
+            <div class="col-md-12" id="registered_by">
+              <div class="card-header">
+                <h5>Registered By </h5>
+                <div class="hidden" id="hidden_data" data-value="{{ driver_owner_admin_counts|safe }}"></div>
+              </div>
+              <div class="card-body">
+                <canvas id="myPieChart" width="400" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+</div>
+{%endblock%}
+{%block scripts%}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.2/dist/apexcharts.min.js"></script>
+
+<script>
+  // Simple Datatable
+  console.log(" Welcome to Addis ", window.location.pathname)
+  // console.log(" Method called ", window.location.href, `${window.location.host}/${window.location.pathname}`)
+  document.addEventListener("DOMContentLoaded", function () {
+    event.preventDefault()
+
+    document.getElementById("clearFilters").addEventListener("click", function () {
+      console.log(" Clear Called ", window.location.href.split("?")[0])
+      event.preventDefault()
+      var baseUrl = window.location.host + window.location.pathname;
+      var baseUrl2 = window.location.href.split('?')[0];
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+      searchParams.set('vehicle_type', '');
+      searchParams.set('registered_by', '');
+      searchParams.set('start_date', '');
+      searchParams.set('end_date', '');
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl; // Redirect to the current URL without parameters
+    });
+
+    var hiddenInputType = document.getElementById("hidden_data_type");
+    var rawValueType = hiddenInputType.getAttribute("data-value");
+    var rawValueDataType = hiddenInputType.getAttribute("data-another-value");
+    var dataValueType = JSON.parse(rawValueType).map(Number);
+    var dataLabelType = rawValueDataType.slice(1, -1).split(", ");
+
+    const arrayOfObjects = [];
+
+    for (let i = 0; i < dataValueType.length; i++) {
+      const obj = {
+        name: dataLabelType[i].replace(/"/g, ''),
+        data: [dataValueType[i]]
+      };
+      arrayOfObjects.push(obj);
+    }
+
+    var hiddenInput = document.getElementById("hidden_data");
+    var rawValue = hiddenInput.getAttribute("data-value");;
+    var labels = ['Driver', 'Owner', 'Admin']
+    var data = JSON.parse(rawValue)
+    var backgroundColors = getBackgroundColors(labels.length);
+    var ctx = document.getElementById('myPieChart').getContext('2d');
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Registered By',
+          data: data,
+          backgroundColor: backgroundColors,
+          borderColor: backgroundColors,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+    function getBackgroundColors(count) {
+      var colors = [];
+      for (var i = 0; i < count; i++) {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        colors.push('rgba(' + r + ',' + g + ',' + b + ',1.0)');
+      }
+      return colors;
+    }
+    var hiddenInputType = document.getElementById("hidden_data_type");
+    var rawValueType = hiddenInputType.getAttribute("data-value");
+    console.log(rawValueType, typeof (rawValueType), rawValueType[0])
+    var dataArray = JSON.parse(rawValueType);
+
+    var barOptions = {
+      series: arrayOfObjects,
+      chart: {
+        type: "bar",
+        height: 250,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: "35%",
+          endingShape: "rounded",
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        show: true,
+        width: 1,
+        colors: ["transparent"],
+      },
+      xaxis: {
+        categories: ["Vehicle Type"],
+      },
+      yaxis: {
+        title: {
+          text: "$ (count)",
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return " " + val + "  Vehicles";
+          },
+        },
+      },
+    };
+
+    var area = new ApexCharts(document.querySelector("#vehicle_type"), barOptions);
+
+    area.render();
+
+
+    document.getElementById('year').addEventListener('change', function () {
+      var selectedYear = this.value;
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+      if (searchParams.has('vehicle_type')) {
+        searchParams.set('vehicle_type', selectedYear);
+      } else {
+        searchParams.append('vehicle_type', selectedYear);
+      }
+
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl;
+    });
+
+    document.getElementById('registered_by').addEventListener('change', function () {
+      var selectedYear = this.value;
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+
+      if (searchParams.has('registered_by')) {
+        searchParams.set('registered_by', selectedYear);
+      } else {
+        searchParams.append('registered_by', selectedYear);
+      }
+
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl;
+    });
+
+    document.getElementById('start_date').addEventListener('change', function () {
+      var selectedYear = this.value;
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+
+      if (searchParams.has('start_date')) {
+        searchParams.set('start_date', selectedYear);
+      } else {
+        searchParams.append('start_date', selectedYear);
+      }
+
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl;
+
+    });
+
+    document.getElementById('end_date').addEventListener('change', function () {
+      var selectedYear = this.value;
+      var currentUrl = window.location.href;
+      var url = new URL(currentUrl);
+      var searchParams = url.searchParams;
+
+      if (searchParams.has('end_date')) {
+        searchParams.set('end_date', selectedYear);
+      } else {
+        searchParams.append('end_date', selectedYear);
+      }
+
+      url.search = searchParams.toString();
+      var newUrl = url.toString();
+      window.location.href = newUrl;
+
+    });
+
+  })
+
+</script>
+{%endblock%}

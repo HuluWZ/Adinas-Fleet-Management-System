@@ -1,0 +1,89 @@
+{% extends 'website/base.html' %}
+{% load i18n %}
+{%load crispy_forms_tags%}
+{% block content%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+
+<style>
+  .errorlist {
+    color: red;
+  }
+</style>
+
+<div class="container overflow-hidden py-5 px-lg-0">
+  <div class="container contact-page py-5 px-lg-0">
+      <div class="row g-5 mx-lg-0">
+          <div class="col-md-2"></div>
+          <div class="col-md-8 contact-form wow fadeIn" data-wow-delay="0.1s">
+              <h6 class="text-secondary text-uppercase">Create Account to register your vehicles / መኪናዎን ለመምዝገብ የርስዎን መረጃ ይመዝግቡ</h6>
+              <div class="bg-light p-4">
+                <form role="form" action="{%url 'signup'%}" method="POST" enctype="multipart/form-daመኪና
+                class="form-horizontal  style-form">
+                {%csrf_token%}
+                <!-- {{form|crispy}} -->
+          
+                <!-- second row -->
+                <div class="form-group row">
+                  
+                  <div class="col-md-6">
+                    <label>{{form.first_name.label}}</label>
+                    {{form.first_name}}
+                    <p class="alert-warning">{{form.first_name.errors}}</p>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label>{{form.last_name.label}}</label>
+                    {{form.last_name}}
+                    <p class="alert-warning">{{form.last_name.errors}}</p>
+                  </div>
+                </div>
+          
+                <!-- second row -->
+                <div class="form-group row">
+                  <div class="col-md-6">
+                    <label>{{form.phone_number.label}}</label>
+                    {{form.phone_number}}
+                    <p class="alert-warning">{{form.phone_number.errors}}</p>
+                  </div>
+                  <div class="col-md-6">
+                    <label>{{form.address.label}}</label>
+                    {{form.address}}
+                    <p class="alert-warning">{{form.address.errors}}</p>
+                  </div>
+                </div>
+                
+                <div class="form-group row"> 
+                  <div class="col-md-12 form-check form-check-inline">
+                        <label>{{form.role.label}}</label>
+                        {{form.role}}
+                        <p class="alert-warning">{{form.role.errors}}</p>
+                  </div>
+                </div>
+          
+          
+                <!-- fourth row -->
+                <div class="form-group">
+                  <div class="col-lg-offset-2 col-lg-10">
+                    <button type="submit" class="btn btn-success" type="submit">{% translate 'Save'%}</button>
+                    <a href="{%url 'web_index'%}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+                  </div>
+                </div>
+              </form>
+              </div>
+              <!-- <hr> -->
+              <!-- <div> 
+                <a href="{% url 'send_otp' %}"> Already have an account? Login </a>
+              </div> -->
+
+          </div>
+          <div class="col-md-2"></div>
+           
+      </div>
+  </div>
+</div>
+
+{%endblock%}
+{%block scripts%}
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+{%endblock%}

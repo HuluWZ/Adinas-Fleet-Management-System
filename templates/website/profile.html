@@ -1,0 +1,136 @@
+{% extends 'website/base.html' %}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{% block content%}
+<link rel="stylesheet" href="/static/vendors/choices.js/choices.min.css" />
+<style>
+  .errorlist {
+    color: red;
+  }
+</style>
+
+
+
+<div class="container overflow-hidden py-5 px-lg-0">
+  <div class="container contact-page py-5 px-lg-0">
+    <div class="row g-5 mx-lg-0">
+      <div class="col-md-2"></div>
+      <div class="col-md-8 contact-form wow fadeIn" data-wow-delay="0.1s">
+        <h6 class="text-secondary text-uppercase">Your Profile Information / የርስዎ የፕሮፋይል መረጃ</h6>
+        <div class="bg-light p-4">
+          {{form.errors}}
+          <form role="form" action="{%url 'profile' %}" method="POST" enctype="multipart/form-data"
+            class="form-horizontal">
+            {%csrf_token%}
+            <!-- {{form|crispy}} -->
+            <input type="hidden" name="username" value="{{object.username}}">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <label>{{form.first_name.label}}</label>
+                {{form.first_name}}
+                <p class="alert-warning">{{form.first_name.errors}}</p>
+              </div>
+              <div class="col-md-4">
+                <label>{{form.last_name.label}}</label>
+                {{form.last_name}}
+                <p class="alert-warning">{{form.last_name.errors}}</p>
+              </div>
+              <div class="col-md-4">
+                <label>{{form.address.label}}</label>
+                {{form.address}}
+                <p class="alert-warning">{{form.address.errors}}</p>
+              </div>
+            </div>
+            <!-- second row -->
+            <div class="form-group row">
+              <div class="col-md-4">
+                <label>{{form.email.label}}</label>
+                {{form.email}}
+                <p class="alert-warning">{{form.email.errors}}</p>
+              </div>
+
+              <div class="col-md-4">
+                <label>{{form.phone_number.label}}</label>
+                {{form.phone_number}}
+                <p class="alert-warning">{{form.phone_number.errors}}</p>
+              </div>
+              <div class="col-md-4">
+                <label>{{form.gender.label}}</label>
+                {{form.gender}}
+                <p class="alert-warning">{{form.gender.errors}}</p>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-md-12">
+                <label>{{form.profile_image.label}}</label>
+                <div class="input-group">
+                  {{form.profile_image}}
+                  {%if object.profile_image%}
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"
+                    type="button">
+                    View</button>
+
+                  {%endif%}
+                </div>
+                {{form.profile_image.help_text}}
+                <p class="alert-warning">{{form.profile_image.errors}}</p>
+              </div> 
+            </div>
+            <div class="card-body">
+              <div class="col-md-6">
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable"
+                    role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Profile Image</h5>
+                        </h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                          <i data-feather="x"></i>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        {%if object.profile_image%}
+                        <div class="modal-body text-center">
+                          <img id="profileImage" src="{{ object.profile_image.url }}" class="img-fluid"
+                            alt="Profile Image">
+                        </div>
+                        {%endif%}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                          <i class="bx bx-x d-block d-sm-none"></i>
+                          <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-lg-offset-2 col-lg-10">
+                <button type="submit" class="btn btn-success" type="submit">{% translate 'Save'%}</button>
+                <a href="{%url 'web_index'%}" class="btn btn-danger" type="button">{% translate 'Cancel'%}</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-2"></div>
+
+    </div>
+  </div>
+</div>
+
+
+{%endblock%}
+{%block scripts %}
+<script src="/static/vendors/choices.js/choices.min.js"></script>
+<script src="/static/js/pages/form-element-select.js"></script>
+
+{%endblock%}

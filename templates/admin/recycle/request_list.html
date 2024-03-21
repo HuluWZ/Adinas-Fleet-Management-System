@@ -1,0 +1,102 @@
+{%extends 'admin/base_site.html'%}
+{%load i18n%}
+{%load crispy_forms_tags%}
+{%block extrastyle%}
+
+<style>
+  .content-panel {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 600px;
+  }
+</style>
+
+{%endblock%}
+{%block archive%}active{%endblock%}
+{%block archive_submenu%}active{%endblock%}
+{%block page_title%}
+<h3>{{subtitle}}</h3>
+{%endblock%}
+{%block page_links%}
+<li class="breadcrumb-item active" aria-current="page"><a href="{%url 'admin:get_all_request'%}">Vehicle Request
+    List</a></li>
+{%endblock%}
+{%block content%}
+
+<div class="card">
+  <hr>
+  <div class="card-body">
+    <table class="table table-striped" id="hidden-table-info">
+      <thead>
+        <tr>
+          <th>{%translate 'No'%}</th>
+          <th>{%translate 'Client Info'%}</th>
+          <th>{%translate 'Vehicle Type'%}</th>
+          <th>{%translate 'Start Date'%}</th>
+          <th>{%translate 'End Date'%}</th>
+          <th>{%translate 'Make'%}</th>
+          <th>{%translate 'Model'%}</th>
+          <th class="hidden-phone">{%translate 'Is Completed'%}</th>
+          <th class="hidden-phone">{%translate 'Is Active'%}</th>
+          <th>{%translate 'Action'%}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for object in vehicle_data%}
+        <tr class="gradeA">
+          <td>{{forloop.counter}}</td>
+          <td>{{object.client_info}}</td>
+          <td>{{object.vehicle_type}}</td>
+          <td>{{object.start_date}}</td>
+          <td>{{object.end_date}}</td>
+          <td>{{object.brand}}</td>
+          <td>{{object.model}}</td>
+          <td class="center hidden-phone">
+            {% if object.is_completed %}
+            YES
+            {% else %}
+            NO
+            {% endif %}
+          </td>
+          <td class="center hidden-phone">
+            {% if object.is_active %}
+            YES
+            {% else %}
+            NO
+            {% endif %}
+          </td>
+          <td>
+            {% if perms.accounts.change_userprofile%}
+            <a href="{%url 'admin:recycle_request' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
+              title="Activate Deactivate Vehicle Request" class="activate-driver btn btn-success btn-sm">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-recycle"
+  viewBox="0 0 16 16">
+  <path
+    d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.5.5 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244z" />
+</svg> </a>
+            </a>
+            {%endif%}
+
+            {% if perms.accounts.delete_user_profile%}
+            <a href="{% url 'admin:delete_request' vehicle_id=object.id %}" title="Delete vehicle"
+              onclick="return confirm('Are You Sure You Want To Delete this Vehicle Request?');"
+              class="btn btn-danger btn-sm">
+              <i class="bi bi-archive"></i>
+            </a>
+            {%endif%}
+          </td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{%endblock%}
+{%block scripts%}
+
+<script>
+  // Simple Datatable
+  
+
+</script>
+{%endblock%}
