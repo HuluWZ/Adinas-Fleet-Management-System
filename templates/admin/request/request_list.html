@@ -23,7 +23,7 @@
 {%block content%}
 <div class="card">
   <div class="card-header">
-    {% if perms.account.booking.add_vehiclebooking or user.is_superuser %}
+    {% if perms.booking.add_vehiclebooking  %}
     <a type="button" href="{%url 'admin:create_request'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add New Vehicle Request'%}</a>
     {%endif%}
@@ -63,7 +63,7 @@
           </td>
                  
            <td>
-            {% if perms.accounts.booking.change_vehiclebooking or user.is_superuser %}
+            {% if perms.booking.change_vehiclebooking  %}
                         {% if object.is_active %}
                                     <a href="{%url 'admin:activate_deactivate_request' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
                                       title="Activate Deactivate Vehicle Request" class="activate-driver btn btn-danger btn-sm">
@@ -85,7 +85,7 @@
               </a>
             </a>
             {%endif%}
-                        {% if perms.accounts.booking.add_assignedvehicle or user.is_superuser %}
+            {% if perms.booking.add_assignedvehicle  %}
 
             <a href="{%url 'admin:assign_request' vehicle_id=object.id  %}" title="Assign Vehicle Request"
               class="btn btn-warning btn-sm">
@@ -94,7 +94,7 @@
             </a>
                         {%endif%}
 
-            {% if perms.accounts.booking.delete_vehiclebooking or user.is_superuser%}
+            {% if perms.booking.delete_vehiclebooking %}
             <a href="{% url 'admin:recycle_request' vehicle_id=object.id %}" title="Delete vehicle"
                    onclick="return confirm('Are You Sure You Want To Delete this Vehicle Request?');" class="btn btn-danger btn-sm">
                   <i class="bi bi-archive"></i> 

@@ -24,7 +24,7 @@
 
 <div class="card">
   <div class="card-header">
-    {% if perms.account.driver.add_owner or user.is_superuser%}
+    {% if perms.driver.add_owner %}
     <a type="button" href="{%url 'admin:create_owner'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add New Owner'%}</a>
     {%endif%}
@@ -51,7 +51,7 @@
           <td class="center hidden-phone">{{object.account.phone_number}}</td>
           <td class="center hidden-phone">{{object.account.email}}</td>
           <td>
-            {% if perms.accounts.driver.change_owner or user.is_superuser%}
+            {% if perms.driver.change_owner %}
               {% if object.is_active %}
                   <a href="{%url 'admin:activate_deactivate_owner' driver_id=object.id%}" data-driver-id="{{ object.id }}"
                           title="Deactivate Account" 
@@ -71,7 +71,7 @@
               </a>
             {%endif%}
 
-            {% if perms.accounts.driver.delete_owner or user.is_superuser%}
+            {% if perms.driver.delete_owner %}
             <a href="{% url 'admin:recycle_owner' driver_id=object.id %}" title="Delete Owner"
   class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
   <i class="bi bi-archive"></i> 
