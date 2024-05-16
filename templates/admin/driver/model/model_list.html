@@ -23,7 +23,7 @@
 
 <div class="card">
   <div class="card-header">
-        {% if perms.account.vehicle.add_vehiclemodel or user.is_superuser %}
+        {% if perms.vehicle.add_vehiclemodel  %}
     <a type="button" href="{%url 'admin:create_model'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add Vehicle Model'%}</a>
     {%endif%}
@@ -47,7 +47,7 @@
                     <td>{{object.created_at}}</td>
 
          <td>
-        {% if perms.account.vehicle.change_vehiclemodel or user.is_superuser %}
+        {% if perms.vehicle.change_vehiclemodel  %}
             {% if object.is_active %}
              <a href="{%url 'admin:activate_deactivate_model' vehicle_id=object.id%}" data-driver-id="{{ object.id }}" title="Activate Deactivate Vehicle Model"
                class="activate-driver btn btn-danger btn-sm">
@@ -67,7 +67,7 @@
               </a>
             {%endif%}
 
-        {% if perms.account.vehicle.delete_vehiclemodel or user.is_superuser %}
+        {% if perms.vehicle.delete_vehiclemodel  %}
             <a href="{% url 'admin:delete_model' vehicle_id=object.id %}" title="Delete Vehicle Model"
   class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
   <i class="bi bi-archive"></i> 
