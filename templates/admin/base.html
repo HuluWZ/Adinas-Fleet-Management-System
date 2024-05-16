@@ -19,11 +19,8 @@
     <link rel="stylesheet" href="/static/css/filepond.css">
     <link rel="stylesheet" href="/static/css/filepond-plugin-image-preview.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/app.css">
-    <link rel="shortcut icon" href="/static/images/logo/favicon.png" type="image/x-icon"><link
-    rel="stylesheet"
-    type="text/css"
-    href="/static/vendors/DataTables/datatables.min.css"
-  />
+    <link rel="shortcut icon" href="/static/images/logo/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/static/vendors/DataTables/datatables.min.css" />
 
     {% block extrastyle %}{% endblock %}
     {% block extrahead %}{% endblock %}
@@ -60,7 +57,6 @@
                         </li>
 
 
-                        {%if user.is_superuser%}
                         <li class="sidebar-item {%block drivers%}{%endblock%} has-sub ">
                             <a href="#" class='sidebar-link'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -71,21 +67,31 @@
                             </a>
 
                             <ul class="submenu {%block drivers_submenu%}{%endblock%}">
+
+                                {% if perms.driver.view_owner %}
+
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_owners'%}">Owners</a>
                                 </li>
+                                {%endif%}
+
+                                {% if perms.vehicle.view_vehicle %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_vehicles'%}">Vehicles</a>
                                 </li>
+                                {%endif%}
+
+                                {% if perms.driver.view_driver %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_drivers'%}">Drivers</a>
                                 </li>
+                                {%endif%}
 
                             </ul>
                         </li>
-                        {%endif%}
 
-                        {%if user.is_superuser%}
+                        {% if perms.client.view_client %}
+
                         <li class="sidebar-item {%block clients%}{%endblock%} has-sub ">
                             <a href="#" class='sidebar-link'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -103,9 +109,11 @@
 
                             </ul>
                         </li>
+
                         {%endif%}
 
-                        {%if user.is_superuser%}
+                        {% if perms.booking.view_vehiclebooking %}
+
                         <li class="sidebar-item {%block requests%}{%endblock%} has-sub ">
                             <a href="#" class='sidebar-link'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -123,7 +131,6 @@
                         </li>
                         {%endif%}
 
-                        {%if user.is_superuser%}
                         <li class="sidebar-item {%block settings%}{%endblock%} has-sub ">
                             <a href="#" class='sidebar-link'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -134,30 +141,40 @@
                                 <span>Setting</span>
                             </a>
                             <ul class="submenu {%block settings_submenu%}{%endblock%}">
+                                {% if perms.vehicle.view_areaofinterest %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_interest'%}"><span>Area Of Interest</span></a>
                                 </li>
+                                {%endif%}
+                                {% if perms.vehicle.view_vehicletype %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_type'%}"><span>Vehicle Type</span></a>
                                 </li>
+                                {%endif%}
+                                {% if perms.vehicle.view_vehiclebrand %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_brand'%}"><span>Vehicle Brand</span></a>
                                 </li>
+                                {%endif%}
+                                {% if perms.vehicle.view_vehiclemodel %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_model'%}"><span>Vehicle Model</span></a>
                                 </li>
+                                {%endif%}
+                                {% if perms.vehicle.view_vehiclecolor %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_color'%}"><span>Vehicle Color</span></a>
                                 </li>
+                                {%endif%}
+
 
 
                             </ul>
 
                         </li>
-                        {%endif%}
 
 
-                        {%if user.is_superuser%}
+
                         <li class="sidebar-item {%block web%}{%endblock%} has-sub ">
                             <a href="#" class='sidebar-link'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -167,72 +184,100 @@
                                 </svg> <span>Web Setting</span>
                             </a>
                             <ul class="submenu {%block web_submenu%}{%endblock%}">
-                                <li class="submenu-item ">                                                            
-                                     <a href="{%url 'admin:get_all_message'%}">
+
+                                {% if perms.web.view_message %}
+
+                                <li class="submenu-item ">
+                                    <a href="{%url 'admin:get_all_message'%}">
                                         <span>Message</span>
                                     </a>
-                                 </li>
-
+                                </li>
+                                {%endif%}
+                                {% if perms.web.view_slider %}
                                 <li class="submenu-item ">
 
                                     <a href="{%url 'admin:get_all_slider'%}">
                                         <span>Slider</span>
                                     </a>
                                 </li>
+                                {%endif%}
+
+                                {% if perms.web.view_partner %}
+
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_partner'%}"><span>Partner</span></a>
                                 </li>
+                                {%endif%}
+
+                                {% if perms.web.view_about %}
+
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_about'%}"><span>About</span></a>
                                 </li>
+                                {%endif%}
+
+                                {% if perms.web.view_testimonial %}
+
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_testimonal'%}"><span>Testimonial</span></a>
                                 </li>
+                                {%endif%}
+
+                                {% if perms.web.view_service %}
+
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_service'%}"><span>Service</span></a>
                                 </li>
+                                {%endif%}
 
 
                             </ul>
 
                         </li>
-                        {%endif%}
-                        {%if user.is_superuser%}
+
                         <li class="sidebar-item {%block report%}{%endblock%} has-sub ">
                             <a href="#" class='sidebar-link'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up-arrow"
-                                    viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd"
                                         d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5" />
                                 </svg>
-                               <span>Report</span>
+                                <span>Report</span>
                             </a>
                             <ul class="submenu {%block report_submenu%}{%endblock%}">
+                                {% if perms.vehicle.view_vehicle %}
+
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:get_all_filter_vehicle'%}">
                                         <span>Vehicle</span>
                                     </a>
                                 </li>
-                        
+                                {%endif%}
+
+                               {% if perms.booking.view_vehiclebooking %}
+
                                 <li class="submenu-item ">
-                        
+
                                     <a href="{%url 'admin:get_all_filter_booking'%}">
                                         <span>Booking</span>
                                     </a>
                                 </li>
+                               {%endif%} 
                             </ul>
                         </li>
-                        {%endif%}    
-                        {%if user.is_superuser%}
+
                         <li class="sidebar-item {%block users%}{%endblock%} has-sub ">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-person-fill"></i>
                                 <span>User</span>
                             </a>
                             <ul class="submenu {%block users_submenu%}{%endblock%}">
+                             {% if perms.accounts.view_useraccount %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:users_list'%}">Users</a>
                                 </li>
+                             {%endif%}
+                             {% if perms.accounts.view_useraccount%}   
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:group_list'%}">Privilages</a>
                                 </li>
@@ -240,11 +285,11 @@
                                     <a target="_blank" href="/admin/fcm_django/fcmdevice/">
                                         Fcm Devices
                                     </a>
-                                  </li>
+                                </li>
                             </ul>
                         </li>
                         {%endif%}
-                        {%if user.is_superuser%}
+
                         <li class="sidebar-item {%block archive%}{%endblock%} has-sub ">
                             <a href="#" class='sidebar-link'>
                                 <!-- <i class="bi bi-recycle"></i> -->
@@ -256,28 +301,39 @@
                                 <span>Recycle Bin</span>
                             </a>
                             <ul class="submenu {%block archive_submenu%}{%endblock%}">
+
+                                {% if perms.driver.view_owner %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:recycle_all_owners'%}">Owners</a>
                                 </li>
+                                {%endif%}
+                                {% if perms.vehicle.view_vehicle %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:recycle_all_vehicles'%}">Vehicles</a>
                                 </li>
+                                {%endif%}
+                                {% if perms.driver.view_driver %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:recycle_all_drivers'%}">Drivers</a>
                                 </li>
+                                {%endif%}
+                               {% if perms.client.view_client %}
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:recycle_all_clients'%}">Clients</a>
                                 </li>
+                                {%endif%}
+                                {% if perms.booking.view_vehiclebooking %}
+
                                 <li class="submenu-item ">
                                     <a href="{%url 'admin:recycle_all_request'%}">Bookings</a>
                                 </li>
+                                {%endif%}
 
 
 
                             </ul>
 
                         </li>
-                        {%endif%}
                         <li class="sidebar-item  ">
                             <a href="{%url 'admin:logout'%}" class='sidebar-link'>
                                 <i class="bi bi-life-preserver"></i>
@@ -312,34 +368,37 @@
                     <ul class="navbar-nav d-flex align-items-center navbar-light ms-auto">
 
                         <li class="dropdown">
-                                                        <a href="#" id="notification-icon" data-toggle="collapse" data-target="#notification-details" aria-expanded="false"
-                                                            aria-controls="notification-details">
-                                                            <i class="bi bi-bell-fill"></i>
-                                                            {% if count %}
-                                                              <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                                                                    <div class="avatar me-1">                
-                                                            
-                                                                        <span id="notification-count-badge" class="badge  bg-danger">
-                                                                                {{ count }}
-                                                                        </span>
-                                                                    </div>
-                                                                                    
-                                                             </a>
+                            <a href="#" id="notification-icon" data-toggle="collapse"
+                                data-target="#notification-details" aria-expanded="false"
+                                aria-controls="notification-details">
+                                <i class="bi bi-bell-fill"></i>
+                                {% if count %}
+                                <a href="#" data-bs-toggle="dropdown"
+                                    class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                                    <div class="avatar me-1">
 
-                                                            {% endif%}
-                                                        </a>
+                                        <span id="notification-count-badge" class="badge  bg-danger">
+                                            {{ count }}
+                                        </span>
+                                    </div>
+
+                                </a>
+
+                                {% endif%}
+                            </a>
                             <div class="dropdown-menu dropdown-menu-end">
-                                {%for  notification in latest_notifications %}
-                                        <a class="dropdown-item" href="{%url 'admin:notification_seen' pk=notification.id vehicle_id=notification.booking %}">
-                                            <i class="bi bi-bell-fill "></i>
-                                               {{notification.message}} 
-                                        </a>
-                                        <div class="dropdown-divider"></div>
+                                {%for notification in latest_notifications %}
+                                <a class="dropdown-item"
+                                    href="{%url 'admin:notification_seen' pk=notification.id vehicle_id=notification.booking %}">
+                                    <i class="bi bi-bell-fill "></i>
+                                    {{notification.message}}
+                                </a>
+                                <div class="dropdown-divider"></div>
 
-                               {% endfor %}
+                                {% endfor %}
                             </div>
-                             <a href="#" data-bs-toggle="dropdown"
-                             class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                            <a href="#" data-bs-toggle="dropdown"
+                                class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                                 <div class="avatar me-1">
                                     {%if user.profile_image%}
                                     <img src="{{user.profile_image.url}}" alt="" srcset="">
@@ -406,39 +465,39 @@
             </footer>
         </div>
     </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
-                const year = new Date().getFullYear();
-                document.getElementById('copyright').innerHTML = `${year}  &copy; Adinas Car Rent`
-                function isNumber(kkk) {
-                    $("#" + kkk).val($("#" + kkk).val().replace(/[^\d.]/g, ''));
-                }
+            const year = new Date().getFullYear();
+            document.getElementById('copyright').innerHTML = `${year}  &copy; Adinas Car Rent`
+            function isNumber(kkk) {
+                $("#" + kkk).val($("#" + kkk).val().replace(/[^\d.]/g, ''));
+            }
 
-                   var notificationIcon = document.getElementById('notification-icon');
-                var notificationDetails = document.getElementById('notification-details');
-                var notificationCountBadge = document.getElementById('notification-count-badge');
+            var notificationIcon = document.getElementById('notification-icon');
+            var notificationDetails = document.getElementById('notification-details');
+            var notificationCountBadge = document.getElementById('notification-count-badge');
 
-                notificationIcon.addEventListener('click', function () {
-                    var notifications = JSON.parse('{{ latest_notifications|safe }}');
-                    notificationDetails.innerHTML = '';
-                    notifications.forEach(function (notification) {
-                        var pElement = document.createElement('p');
-                        pElement.textContent = notification.fields.title;
-                        notificationDetails.appendChild(pElement);
-                    });
-
-                    notificationCountBadge.textContent = notifications.length;
-
-                    if (notificationDetails.classList.contains('show')) {
-                        notificationDetails.classList.remove('show');
-                    } else {
-                        notificationDetails.classList.add('show');
-                    }
+            notificationIcon.addEventListener('click', function () {
+                var notifications = JSON.parse('{{ latest_notifications|safe }}');
+                notificationDetails.innerHTML = '';
+                notifications.forEach(function (notification) {
+                    var pElement = document.createElement('p');
+                    pElement.textContent = notification.fields.title;
+                    notificationDetails.appendChild(pElement);
                 });
-         });
-        
-        </script>
+
+                notificationCountBadge.textContent = notifications.length;
+
+                if (notificationDetails.classList.contains('show')) {
+                    notificationDetails.classList.remove('show');
+                } else {
+                    notificationDetails.classList.add('show');
+                }
+            });
+        });
+
+    </script>
     <script src="/static/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="/static/js/bootstrap.bundle.min.js"></script>
 
@@ -449,36 +508,34 @@
     <script
         src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <!-- filepond -->
-    <script src="https://unpkg.com/filepond/dist/filepond.js"></script><script
-    type="text/javascript"
-    src="/static/vendors/DataTables/datatables.min.js"
-  ></script>
+    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+    <script type="text/javascript" src="/static/vendors/DataTables/datatables.min.js"></script>
     <script>
-         $(function() {
-  
+        $(function () {
 
-  /*
-   * Initialse DataTables, with no sorting on the 'details' column
-   */
-  var oTable = $('#hidden-table-info, #hidden-table-infob,'+
-                '#hidden-table-infom, #hidden-table-infof, '+
+
+            /*
+             * Initialse DataTables, with no sorting on the 'details' column
+             */
+            var oTable = $('#hidden-table-info, #hidden-table-infob,' +
+                '#hidden-table-infom, #hidden-table-infof, ' +
                 '#hidden-table-infot, #hidden-table-infoy').dataTable({
-    "scrollX": false,
-    dom: 'Bfrtip',
-    buttons: [
-      'csv', 'excel', 'pdf', 'print'
-    ],
-    "aoColumnDefs": [{
-      "bSortable": false,
-      "aTargets": [0]
-    }],
-    "aaSorting": [
-      [0, 'asc']
-    ]
-  }); 
-  
+                    "scrollX": false,
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'csv', 'excel', 'pdf', 'print'
+                    ],
+                    "aoColumnDefs": [{
+                        "bSortable": false,
+                        "aTargets": [0]
+                    }],
+                    "aaSorting": [
+                        [0, 'asc']
+                    ]
+                });
 
-});
+
+        });
 
     </script>
     {%block scripts%}
