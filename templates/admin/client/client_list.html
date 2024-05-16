@@ -23,7 +23,7 @@
 
 <div class="card">
   <div class="card-header">
-    {% if perms.account.client.add_client or user.is_superuser%}
+    {% if perms.client.add_client %}
     <a type="button" href="{%url 'admin:create_client'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add New Client'%}</a>
     {%endif%}
@@ -52,7 +52,7 @@
           <td>{{object.focal_person_name}}</td>
           <td class="center hidden-phone">{{object.phone_number}}</td>
            <td>
-            {% if perms.accounts.client.change_client or user.is_superuser%}
+            {% if perms.client.change_client %}
                         {% if object.is_active %}
                         <a href="{%url 'admin:activate_deactivate_client' client_id=object.id%}" data-driver-id="{{ object.id }}" title="Activate Deactivate Client"
                           class="activate-driver btn btn-danger btn-sm">
@@ -73,7 +73,7 @@
             </a>
             {%endif%}
 
-            {% if perms.accounts.client.delete_client or user.is_superuser %}
+            {% if perms.client.delete_client  %}
             <a href="{% url 'admin:recycle_client' client_id=object.id %}" title="Delete Client"
                    onclick="return confirm('Are You Sure You Want To Delete this User?');" class="btn btn-danger btn-sm">
                   <i class="bi bi-archive"></i> 

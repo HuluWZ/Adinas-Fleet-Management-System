@@ -23,7 +23,7 @@
 
 <div class="card">
   <div class="card-header">
-    {% if perms.accounts.driver.add_driver or user.is_superuser%}
+    {% if perms.driver.add_driver %}
     <a type="button" href="{%url 'admin:create_driver'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add New Driver'%}</a>
     {%endif%}
@@ -50,7 +50,7 @@
           <td class="center hidden-phone">{{object.account.phone_number}}</td>
           <td class="center hidden-phone">{{object.account.email}}</td>
          <td>
-            {% if perms.accounts.driver.change_driver or user.is_superuser%}
+            {% if perms.driver.change_driver %}
               {% if object.is_active %}
                           <a href="{%url 'admin:activate_deactivate_driver' driver_id=object.id%}" data-driver-id="{{ object.id }}"
                             title="Activate Deactivate Account" class="activate-driver btn btn-danger btn-sm">
@@ -71,7 +71,7 @@
               </a>
             {%endif%}
 
-            {% if perms.accounts.driver.delete_driver or user.is_superuser%}
+            {% if perms.driver.delete_driver %}
             <a href="{% url 'admin:recycle_driver' driver_id=object.id %}" title="Delete Driver"
   class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
   <i class="bi bi-archive"></i> 
