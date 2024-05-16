@@ -55,7 +55,7 @@
             {% endif %}
           </td>
           <td>
-            {% if perms.accounts.client.change_client or user.is_superuser%}
+            {% if perms.client.change_client %}
             <a href="{%url 'admin:recycle_client' client_id=object.id%}" data-driver-id="{{ object.id }}"
               title="Activate Deactivate Client" class="activate-driver btn btn-success btn-sm">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-recycle"
@@ -66,7 +66,7 @@
             </a>
             {%endif%}
 
-            {% if perms.accounts.client.delete_client or user.is_superuser %}
+            {% if perms.client.delete_client  %}
             <a href="{% url 'admin:delete_client' client_id=object.id %}" title="Delete Client"
               onclick="return confirm('Are You Sure You Want To Delete this User?');" class="btn btn-danger btn-sm">
               <i class="bi bi-archive"></i>

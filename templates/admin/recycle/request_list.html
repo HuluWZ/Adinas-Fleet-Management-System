@@ -66,7 +66,7 @@
             {% endif %}
           </td>
           <td>
-            {% if perms.accounts.change_userprofile%}
+            {% if perms.booking.view_vehicle_booking%}
             <a href="{%url 'admin:recycle_request' vehicle_id=object.id%}" data-driver-id="{{ object.id }}"
               title="Activate Deactivate Vehicle Request" class="activate-driver btn btn-success btn-sm">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-recycle"
@@ -77,7 +77,7 @@
             </a>
             {%endif%}
 
-            {% if perms.accounts.delete_user_profile%}
+            {% if perms.booking.delete_vehicle_booking%}
             <a href="{% url 'admin:delete_request' vehicle_id=object.id %}" title="Delete vehicle"
               onclick="return confirm('Are You Sure You Want To Delete this Vehicle Request?');"
               class="btn btn-danger btn-sm">

@@ -53,7 +53,7 @@
             {% endif %}
           </td>
           <td>
-            {% if perms.accounts.driver.change_owner or user.is_superuser%}
+            {% if perms.driver.change_owner %}
             <a href="{%url 'admin:recycle_owner' driver_id=object.id%}" data-driver-id="{{ object.id }}"
               title="Activate Deactivate Owner" class="activate-driver btn btn-success btn-sm">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-recycle"
@@ -64,7 +64,7 @@
             </a>
             {%endif%}
 
-            {% if perms.accounts.driver.delete_owner or user.is_superuser%}
+            {% if perms.driver.delete_owner %}
             <a href="{% url 'admin:delete_owner' driver_id=object.id %}" title="Delete Owner"
               class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
               <i class="bi bi-archive"></i>
