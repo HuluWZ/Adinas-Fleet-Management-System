@@ -24,7 +24,7 @@
 
 <div class="card">
   <div class="card-header">
-      {% if perms.auth.web.add_service or user.is_superuser %}
+      {% if perms.web.add_service  %}
     <a type="button" href="{%url 'admin:create_service'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add New Service'%}</a>
     {%endif%}
@@ -47,7 +47,7 @@
           <td>{{object.title}}</td>
           <td >{{object.description|slice:":80"}}</td>
            <td>
-      {% if perms.auth.web.change_service or user.is_superuser %}
+      {% if perms.web.change_service  %}
               {% if object.is_active %}
                           <a href="{%url 'admin:activate_deactivate_service' web_id=object.id%}" data-driver-id="{{ object.id }}"
                             title="Activate Deactivate Service" class="activate-driver btn btn-danger btn-sm">
@@ -69,7 +69,7 @@
               </a>
             {%endif%}
 
-      {% if perms.auth.web.delete_service or user.is_superuser %}
+      {% if perms.web.delete_service  %}
             <a href="{% url 'admin:delete_service' web_id=object.id %}" title="Delete Service"
   class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
   <i class="bi bi-archive"></i> 

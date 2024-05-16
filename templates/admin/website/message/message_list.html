@@ -23,7 +23,7 @@
 {%block content%}
 <div class="card">
   <div class="card-header">
-    {% if perms.auth.web.add_message or user.is_superuser %}
+    {% if perms.web.add_message  %}
     <a type="button" href="{%url 'admin:create_message'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add New Message'%}</a>
     {%endif%}
@@ -50,14 +50,14 @@
           <td>{{object.email}}</td>
           <td class="center hidden-phone">{{object.note|slice:":80"}}</td>
           <td>
-          {% if perms.auth.web.change_message or user.is_superuser %}
+          {% if perms.web.change_message  %}
              <a href="{%url 'admin:update_message' web_id=object.id%}" title="Update/View Message Information"
                 class="btn btn-primary btn-sm">
                 <i class="bi bi-pencil-square"></i>
               </a>
             {%endif%}
 
-          {% if perms.auth.web.delete_message or user.is_superuser %}
+          {% if perms.web.delete_message  %}
             <a href="{% url 'admin:delete_message' web_id=object.id %}" title="Delete Message"
   class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
   <i class="bi bi-archive"></i> 

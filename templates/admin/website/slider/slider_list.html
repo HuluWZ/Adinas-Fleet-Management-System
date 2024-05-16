@@ -24,7 +24,7 @@
 
 <div class="card">
   <div class="card-header">
-      {% if perms.auth.web.add_slider or user.is_superuser %}
+      {% if perms.web.add_slider  %}
     <a type="button" href="{%url 'admin:create_slider'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add New Slider'%}</a>
     {%endif%}
@@ -47,7 +47,7 @@
           <td>{{object.title}}</td>
           <td class="center hidden-phone">{{object.description|slice:":100"}}</td>
        <td>
-      {% if perms.auth.web.change_slider or user.is_superuser %}
+      {% if perms.web.change_slider  %}
               {% if object.is_active %}
                           <a href="{%url 'admin:activate_deactivate_slider' web_id=object.id%}" data-driver-id="{{ object.id }}"
                             title="Activate Deactivate Slider" class="activate-driver btn btn-danger btn-sm">
@@ -68,7 +68,7 @@
               </a>
             {%endif%}
 
-      {% if perms.auth.web.delete_slider or user.is_superuser %}
+      {% if perms.web.delete_slider  %}
             <a href="{% url 'admin:delete_slider' web_id=object.id %}" title="Delete Slider"
   class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
   <i class="bi bi-archive"></i> 

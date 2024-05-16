@@ -24,7 +24,7 @@
 
 <div class="card">
   <div class="card-header">
-      {% if perms.auth.web.add_testimonial or user.is_superuser %}
+      {% if perms.web.add_testimonial  %}
     <a type="button" href="{%url 'admin:create_testimonal'%}" class="btn btn-outline-primary"><i class="fa fa-plus"></i>
       {%translate 'Add New Testimonal'%}</a>
     {%endif%}
@@ -50,7 +50,7 @@
           <td class="center hidden-phone">{{object.company_name}}</td>
 
            <td>
-      {% if perms.auth.web.change_testimonial or user.is_superuser %}
+      {% if perms.web.change_testimonial  %}
               {% if object.is_active %}
                           <a href="{%url 'admin:activate_deactivate_testimonal' web_id=object.id%}" data-driver-id="{{ object.id }}"
                             title="Activate Deactivate Testimonal" class="activate-driver btn btn-danger btn-sm">
@@ -72,7 +72,7 @@
               </a>
             {%endif%}
 
-      {% if perms.auth.web.delete_testimonial or user.is_superuser %}
+      {% if perms.web.delete_testimonial  %}
             <a href="{% url 'admin:delete_testimonal' web_id=object.id %}" title="Delete Testimonal"
   class="btn btn-danger btn-sm delete-driver" data-driver-id="{{ object.id }}">
   <i class="bi bi-archive"></i> 
