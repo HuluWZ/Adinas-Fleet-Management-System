@@ -104,7 +104,7 @@
                 <td>{{object.model}}</td>
                 <td class="center hidden-phone">{{object.production_year}}</td>
                 <td>
-                  {% if perms.accounts.change_userprofile%}
+                  {% if perms.vehicle.change_vehicle%}
                   {% if object.is_available %}
                   <a href="{%url 'admin:activate_deactivate_vehicle' vehicle_id=object.id%}"
                     data-driver-id="{{ object.id }}" title="Activate Deactivate Vehicle"
@@ -126,7 +126,7 @@
                   </a>
                   {%endif%}
 
-                  {% if perms.accounts.delete_user_profile%}
+                  {% if perms.vehicle.delete_vehicle%}
                   <a href="{% url 'admin:recycle_vehicle' vehicle_id=object.id %}" title="Delete vehicle"
                     onclick="return confirm('Are You Sure You Want To Delete this Vehicle?');"
                     class="btn btn-danger btn-sm">
